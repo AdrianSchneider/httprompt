@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+'use strict';
+
+var program    = require('commander');
+var request    = require('request');
+var Prompt     = require('../src/ui/prompt');
+var HttpClient = require('../src/http/client');
+var HttpPrompt = require('../src/ui/httpPrompt');
+var Renderer   = require('../src/ui/renderer');
+
+program
+  .version('0.0.1')
+  .option('-u --username [value]', 'Username')
+  .option('-p --password [value]', 'Password')
+  .option('-P --port', 'Port')
+  .option('-v --verbose')
+  .option('-H --headers', 'Only include headers')
+  .parse(process.argv);
+
+var prompt = new Prompt(
+  new HttpPrompt(new HttpClient(request, {})),
+  new Renderer('console'),
+  { input: process.stdin, output: process.stdout }
+);
+prompt.start();

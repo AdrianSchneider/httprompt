@@ -15,5 +15,14 @@
     "rest"
   ],
   "author": "Adrian Schneider",
-  "license": "MIT"
+  "dependencies": {
+    "commander": "^2.8.1",
+    "request": "^2.58.0",
+    "underscore": "^1.8.3"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "nodemock": "^0.3.4"
+  }
 }
