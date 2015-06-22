@@ -1,29 +1,58 @@
 'use strict';
 
-var util         = require('util');
-var readline     = require('readline');
-var EventEmitter = require('events').EventEmitter;
+var readline = require('readline');
 
 /**
  * Wraps a readline prompt with some application-centric events and methods
  *
- * @param PromptApplication app
- * @param object options (for readline)
+ * @param {Array}    providers - Command providers that respond to inputs
+ * @param {Renderer} renderer  - Responds to errors/responses to the user
+ * @param {Object}   options
+ * @param {Stream}   options.input  - The input stream for the repl
+ * @param {Stream}   options.output - The input stream for the repl
  */
-function Prompt(app, renderer, options) {
-  EventEmitter.call(this);
-
+module.exports = function Prompt(commandProviders, renderer, options) {
   var rl = readline.createInterface(options);
-  var prompt = this;
 
-  rl.on('line', app.input);
-  app.on('output', renderer(this).renderResponse);
-  app.on('error', renderer(this).renderError);
-
+  /**
+   * Starts the prompt
+   */
   this.start = function() {
     rl.prompt();
   };
-}
 
-util.inherits(Prompt, EventEmitter);
-module.exports = Prompt;
+  /**
+   * Called whenever a line is received from the repl
+   *
+   * @param {String} line - line from repl
+   */
+  var onLine = function(line) {
+    rl.pause();
+    if (!line) return afterResponse();
+
+    var matched = commandProviders.filter(function(provider) {
+      return provider.match(line);
+    })[0];
+
+    if (!matched) {
+      return renderer.renderError(
+        new Error('Unknown command; type "help" for some ideas'),
+        afterResponse
+      );
+    }
+
+    matched.process(line, function(err, response) {
+      if (err) return renderer.renderError(err, afterResponse);
+      renderer.renderResponse(response, afterResponse);
+    });
+  };
+
+  /**
+   * Called after rendering
+   */
+  var afterResponse = function() {
+    rl.prompt();
+  };
+
+  rl.on('line', onLine);
+};

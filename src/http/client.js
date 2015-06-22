@@ -1,6 +1,5 @@
 'use strict';
 
-var _            = require('underscore');
 var HttpResponse = require('./response');
 
 module.exports = function HttpClient(request, profile) {
@@ -16,7 +15,7 @@ module.exports = function HttpClient(request, profile) {
 
     request.get(
       profile.buildUrl(url),
-      query ? { query: query } : {},
+      profile.buildOptions(query),
       handleResponse(done)
     );
   };
@@ -25,29 +24,41 @@ module.exports = function HttpClient(request, profile) {
    * Sends a PUT request
    */
   this.put = function(url, data, done) {
-
+    request.put(
+      profile.buildUrl(url),
+      profile.buildOptions(data),
+      handleResponse(done)
+    );
   };
 
   /**
    * Sends a POST request
    */
   this.post = function(url, data, done) {
-
+    request.post(
+      profile.buildUrl(url),
+      profile.buildOptions(data),
+      handleResponse(done)
+    );
   };
 
   /**
    * Sends a DELETE request
    */
   this.del = function(url, done) {
-
+    request.del(
+      profile.buildUrl(url),
+      profile.buildOptions(),
+      handleResponse(done)
+    );
   };
 
   /**
    * Returns a response handler that converts
    * res,body into a single HttpResponse object
    *
-   * @param function done
-   * @return function
+   * @param {Function} done
+   * @return {Function}
    */
   var handleResponse = function(done) {
     return function(err, res, body) {

@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 'use strict';
 
-var program    = require('commander');
-var request    = require('request');
-var Prompt     = require('../src/ui/prompt');
-var HttpClient = require('../src/http/client');
-var HttpPrompt = require('../src/ui/httpPrompt');
-var Renderer   = require('../src/ui/renderer');
+var program      = require('commander');
+var request      = require('request');
+var Prompt       = require('../src/ui/prompt');
+var HttpClient   = require('../src/http/client');
+var HelpCommand  = require('../src/ui/commands/help');
+var HttpCommands = require('../src/ui/commands/http');
+var Renderer     = require('../src/ui/renderer');
 
 program
   .version('0.0.1')
@@ -17,9 +18,14 @@ program
   .option('-H --headers', 'Only include headers')
   .parse(process.argv);
 
+var commandProviders = [
+  new HelpCommand(),
+  new HttpCommands(new HttpClient(request, {}))
+];
+
 var prompt = new Prompt(
-  new HttpPrompt(new HttpClient(request, {})),
-  new Renderer('console'),
+  commandProviders,
+  new Renderer('jsonfui'),
   { input: process.stdin, output: process.stdout }
 );
 prompt.start();

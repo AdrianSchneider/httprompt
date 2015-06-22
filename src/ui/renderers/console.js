@@ -1,14 +1,12 @@
 'use strict';
 
-module.exports = function ConsoleRenderer(prompt) {
-  return {
-    renderResponse: function(response) {
-      console.log(response);
-      prompt.start();
-    },
-    renderError: function(error) {
-      console.log('Error', error);
-      prompt.start();
-    }
-  };
+module.exports = {
+  renderResponse: function(response, done) {
+    console.log(response.getBody ? response.getBody() : response);
+    done();
+  },
+  renderError: function(error, done) {
+    console.log('Error', error);
+    done();
+  }
 };
