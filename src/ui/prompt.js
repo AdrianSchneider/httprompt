@@ -13,6 +13,8 @@ var readline = require('readline');
  */
 module.exports = function Prompt(commandProviders, renderer, options) {
   var rl = readline.createInterface(options);
+  rl.history = ['test'];
+  rl.historyIndex = 0;
 
   /**
    * Starts the prompt
@@ -29,6 +31,29 @@ module.exports = function Prompt(commandProviders, renderer, options) {
   var onLine = function(line) {
     rl.pause();
     if (!line) return afterResponse();
+
+    if (line === 'help') {
+      return renderer.renderResponse(
+        commandProviders
+          .filter(function(provider) {
+            return provider.getHelp;
+          })
+          .reduce(function(out, provider) {
+            out = out.concat([provider.getHelp()]);
+            out.sort(function(a, b) {
+              a = a[0].split(' ')[0];
+              b = b[0].split(' ')[0];
+              return a === b ? 0 : (a < b ? -1 : 1);
+            });
+            return out;
+          }, [])
+          .reduce(function(out, groups) {
+            out = out.concat(groups);
+            return out;
+          }, []),
+          afterResponse
+      );
+    }
 
     var matched = commandProviders.filter(function(provider) {
       return provider.match(line);

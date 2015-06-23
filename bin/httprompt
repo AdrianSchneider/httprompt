@@ -1,31 +1,40 @@
 #!/usr/bin/env node
 'use strict';
 
-var program      = require('commander');
-var request      = require('request');
-var Prompt       = require('../src/ui/prompt');
-var HttpClient   = require('../src/http/client');
-var HelpCommand  = require('../src/ui/commands/help');
-var HttpCommands = require('../src/ui/commands/http');
-var Renderer     = require('../src/ui/renderer');
+var program        = require('commander');
+var request        = require('request');
+var Prompt         = require('../src/ui/prompt');
+var HttpClient     = require('../src/http/client');
+var Profile        = require('../src/ui/profile');
+var HttpCommands   = require('../src/ui/commands/http');
+var ConfigCommands = require('../src/ui/commands/config');
+var Renderer       = require('../src/ui/renderer');
 
 program
   .version('0.0.1')
-  .option('-u --username [value]', 'Username')
+  .option('-b --baseurl [value]', 'Base URL')
   .option('-p --password [value]', 'Password')
   .option('-P --port', 'Port')
   .option('-v --verbose')
   .option('-H --headers', 'Only include headers')
   .parse(process.argv);
 
+if(!program.baseurl) {
+  console.error('No baseurl set; set one with -b');
+  process.exit(0);
+}
+
 var commandProviders = [
-  new HelpCommand(),
-  new HttpCommands(new HttpClient(request, {}))
+  new ConfigCommands(require('../config')),
+  new HttpCommands(new HttpClient(
+    request, 
+    new Profile(program.baseurl)
+  ))
 ];
 
 var prompt = new Prompt(
   commandProviders,
-  new Renderer('jsonfui'),
+  new Renderer('console'),
   { input: process.stdin, output: process.stdout }
 );
 prompt.start();

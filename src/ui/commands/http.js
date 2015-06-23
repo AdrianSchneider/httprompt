@@ -26,11 +26,11 @@ module.exports = function HttpCommands(client) {
    * @param {Function} done - called when complete
    */
   this.process = function(line, done) {
-    var parts = line.split(' ', 3);
+    var parts = line.split(' ');
 
     var method = parts[0].toLowerCase();
     var url = parts[1];
-    var payload = parts[2];
+    var payload = parts.slice(2).join(' ');
 
     if (payload) {
       try {
@@ -48,6 +48,20 @@ module.exports = function HttpCommands(client) {
     };
 
     commands[method](url, payload, done);
+  };
+
+  /**
+   * Returns the help for this module
+   *
+   * @return {Array}
+   */
+  this.getHelp = function() {
+    return [
+      'GET <path>',
+      'POST <path> <jsonData>',
+      'PUT <path> <jsonData>',
+      'DELETE <path>'
+    ];
   };
 
   /**
