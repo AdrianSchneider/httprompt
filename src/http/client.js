@@ -2,9 +2,12 @@
 
 var HttpResponse = require('./response');
 
-module.exports = function HttpClient(request, profile, maxHistory) {
+module.exports = function HttpClient(profile, options, request) {
   var history = [];
-  if(!maxHistory) maxHistory = 10;
+
+  if(!options) options = {};
+  if(!options.maxHistory) options.maxHistory = 10;
+  if(!request) request = require('request');
 
   /**
    * Sends a GET request
@@ -66,7 +69,7 @@ module.exports = function HttpClient(request, profile, maxHistory) {
     return function(err, res, body) {
       if(err) return done(err);
       history.push({ res: res, body: body });
-      history = history.slice(-maxHistory);
+      history = history.slice(-options.maxHistory);
       return done(null, new HttpResponse(res, body));
     };
   };
