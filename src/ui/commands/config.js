@@ -17,7 +17,7 @@ module.exports = function ConfigCommands(config) {
   this.match = function(line) {
     return keywords.filter(function(keyword) {
       return line.indexOf(keyword) === 0;
-    }).length;
+    }).length >= 1;
   };
 
   /**
@@ -41,7 +41,7 @@ module.exports = function ConfigCommands(config) {
    *
    * @return {Array}
    */
-  this.getHelp = function(done) {
+  this.getHelp = function() {
     return [
       'config set <key> <value>: changes a config option',
       'config get <key>: gets a single config value',

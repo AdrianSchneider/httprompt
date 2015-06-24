@@ -16,7 +16,7 @@ module.exports = function HttpCommands(client) {
    * @return {Boolean}
    */
   this.match = function(line) {
-    return /^(get|put|post|delete|options|patch|head) /i.test(line);
+    return /^(get|put|post|delete) /i.test(line);
   };
 
   /**
@@ -35,10 +35,10 @@ module.exports = function HttpCommands(client) {
     if (payload) {
       try {
         payload = JSON.parse(payload);
-      } catch (e) {
-        payload = null;
-      }
+      } catch (e) { }
     }
+
+    if (!payload) payload = null;
 
     var commands = {
       'get'    : handleGet,
