@@ -18,6 +18,6 @@ if(!program.baseurl) {
   process.exit(0);
 }
 
-var config = require('../config');
+var config = require('../src/config');
 var prompt = app(config, process.stdin, process.stdout, program.baseurl);
 prompt.start();

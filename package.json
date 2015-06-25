@@ -17,6 +17,7 @@
   "author": "Adrian Schneider",
   "dependencies": {
     "commander": "^2.8.1",
+    "nconf": "^0.7.1",
     "request": "^2.58.0",
     "underscore": "^1.8.3"
   },
