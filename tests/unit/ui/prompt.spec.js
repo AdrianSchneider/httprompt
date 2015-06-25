@@ -40,12 +40,12 @@ describe('Prompt', function() {
 
   it('Prints out help sorted for all providers on "help"', function(done) {
     this.renderer
-      .mock('renderResponse')
-      .takesF(function(msg, done) {
+      .mock('render')
+      .takesF(function(renderer, msg, done) {
         expect(msg).to.deep.equal(['a: emits a', 'aa: starts with a', 'b: emits b']);
         return true;
       })
-      .calls(1, []);
+      .calls(2, []);
 
     var rl = this.prompt.start();
     rl.on('prompt', done);
@@ -54,12 +54,12 @@ describe('Prompt', function() {
 
   it('Errors on unknown command', function(done) {
     this.renderer
-      .mock('renderError')
-      .takesF(function(msg, done) {
+      .mock('render')
+      .takesF(function(renderer, msg, done) {
         expect(msg.message).to.contain('Unknown');
         return true;
       })
-      .calls(1, []);
+      .calls(2, []);
 
     var rl = this.prompt.start();
     rl.on('prompt', done);
@@ -68,12 +68,12 @@ describe('Prompt', function() {
 
   it('Runs first matched provider and resumes after rendering', function(done) {
     this.renderer
-      .mock('renderResponse')
-      .takesF(function(response, done) {
+      .mock('render')
+      .takesF(function(renderer, response, done) {
         expect(response).to.equal('processed a');
         return true;
       })
-      .calls(1, []);
+      .calls(2, []);
 
     var rl = this.prompt.start();
     rl.on('prompt', done);

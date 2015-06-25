@@ -33,7 +33,8 @@ module.exports = function Prompt(readline, commandProviders, renderer, options) 
     if (!line) return afterResponse();
 
     if (line === 'help') {
-      return renderer.renderResponse(
+      return renderer.render(
+        'console',
         commandProviders
           .filter(function(provider) {
             return provider.getHelp;
@@ -60,15 +61,16 @@ module.exports = function Prompt(readline, commandProviders, renderer, options) 
     })[0];
 
     if (!matched) {
-      return renderer.renderError(
+      return renderer.render(
+        'console',
         new Error('Unknown command; type "help" for some ideas'),
         afterResponse
       );
     }
 
     matched.process(line, function(err, response) {
-      if (err) return renderer.renderError(err, afterResponse);
-      renderer.renderResponse(response, afterResponse);
+      if (err) return renderer.render('console', err, afterResponse);
+      renderer.render('console', response, afterResponse);
     });
   };
 

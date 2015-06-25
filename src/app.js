@@ -18,7 +18,10 @@ module.exports = function(config, stdin, stdout, baseUrl) {
   var prompt = new Prompt(
     readline,
     commandProviders,
-    new Renderer(config.renderer),
+    new Renderer(config, {
+      console: require('./ui/renderers/console'),
+      jsonfui: require('./ui/renderers/jsonfui')
+    }),
     { input: stdin, output: stdout }
   );
 
