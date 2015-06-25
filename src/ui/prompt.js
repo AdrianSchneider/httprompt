@@ -1,7 +1,5 @@
 'use strict';
 
-var readline = require('readline');
-
 /**
  * Wraps a readline prompt with some application-centric events and methods
  *
@@ -11,7 +9,7 @@ var readline = require('readline');
  * @param {Stream}   options.input  - The input stream for the repl
  * @param {Stream}   options.output - The input stream for the repl
  */
-module.exports = function Prompt(commandProviders, renderer, options) {
+module.exports = function Prompt(readline, commandProviders, renderer, options) {
   var rl = readline.createInterface(options);
   rl.history = ['test'];
   rl.historyIndex = 0;
@@ -20,7 +18,9 @@ module.exports = function Prompt(commandProviders, renderer, options) {
    * Starts the prompt
    */
   this.start = function() {
+    rl.setPrompt('httprompt> ');
     rl.prompt();
+    return rl;
   };
 
   /**

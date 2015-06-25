@@ -1,6 +1,7 @@
 'use strict';
 
 var request        = require('request');
+var readline       = require('readline');
 var Prompt         = require('./ui/prompt');
 var Profile        = require('./ui/profile');
 var HttpCommands   = require('./ui/commands/http');
@@ -15,6 +16,7 @@ module.exports = function(config, stdin, stdout, baseUrl) {
   ];
 
   var prompt = new Prompt(
+    readline,
     commandProviders,
     new Renderer(config.renderer),
     { input: stdin, output: stdout }
