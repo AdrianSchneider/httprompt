@@ -1,5 +1,8 @@
 'use strict';
 
+var _            = require('underscore');
+var HttpResponse = require('../../http/response');
+
 module.exports = function HistoryCommands(client, renderer) {
 
   this.match = function(line) {
@@ -7,13 +10,10 @@ module.exports = function HistoryCommands(client, renderer) {
   };
 
   this.process = function(line, done) {
-    renderer.renderExternal({ 
-      getHeaders: function() { return { 'content-type': 'application/json' }; },
-      getBody: function() { return [1, 2, 3]; }
-    }, function(err) {
-      if(err) return done(err);
-      return done(null, null);
-    });
+    var history = client.getHistory();
+    var latest = _.last(history);
+    if (!latest) return done(null, 'No response to show');
+    renderer.renderExternal(latest);
   };
 
   this.getHelp = function() {

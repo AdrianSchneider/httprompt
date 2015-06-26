@@ -68,10 +68,19 @@ module.exports = function HttpClient(profile, options, request) {
   var handleResponse = function(done) {
     return function(err, res, body) {
       if(err) return done(err);
-      history.push({ res: res, body: body });
-      history = history.slice(-options.maxHistory);
-      return done(null, new HttpResponse(res, body));
+      var response = new HttpResponse(res, body);
+      history.push(response);
+      return done(null, response);
     };
+  };
+
+  /**
+   * Returns the history
+   *
+   * @return Array
+   */
+  this.getHistory = function() {
+    return history;
   };
 
 };
