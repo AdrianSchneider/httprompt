@@ -2,7 +2,8 @@
 
 module.exports = {
   renderResponse: function(response, done) {
-    console.log(response.serialize ? response.serialize() : JSON.stringify(response, null, 2));
+    if(!response) return done();
+    console.log(typeof response.serialize !== 'undefined' ? response.serialize() : JSON.stringify(response, null, 2));
     done();
   },
   renderError: function(error, done) {

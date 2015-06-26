@@ -30,36 +30,10 @@ module.exports = function Prompt(readline, commandProviders, renderer, options) 
    */
   var onLine = function(line) {
     rl.pause();
-    if (!line) return afterResponse();
+    if (line === '')     return afterResponse();
+    if (line === 'help') return renderer.render('console', getHelp(), afterResponse);
 
-    if (line === 'help') {
-      return renderer.render(
-        'console',
-        commandProviders
-          .filter(function(provider) {
-            return provider.getHelp;
-          })
-          .reduce(function(out, provider) {
-            out = out.concat([provider.getHelp()]);
-            out.sort(function(a, b) {
-              a = a[0].split(' ')[0];
-              b = b[0].split(' ')[0];
-              return a === b ? 0 : (a < b ? -1 : 1);
-            });
-            return out;
-          }, [])
-          .reduce(function(out, groups) {
-            out = out.concat(groups);
-            return out;
-          }, []),
-          afterResponse
-      );
-    }
-
-    var matched = commandProviders.filter(function(provider) {
-      return provider.match(line);
-    })[0];
-
+    var matched = commandProviders.filter(function(provider) { return provider.match(line); })[0];
     if (!matched) {
       return renderer.render(
         'console',
@@ -79,6 +53,31 @@ module.exports = function Prompt(readline, commandProviders, renderer, options) 
    */
   var afterResponse = function() {
     rl.prompt();
+  };
+
+  /**
+   * Fetches the help text
+   *
+   * @return {Array}
+   */
+  var getHelp = function() {
+    return commandProviders
+      .filter(function(provider) {
+        return provider.getHelp;
+      })
+      .reduce(function(out, provider) {
+        out = out.concat([provider.getHelp()]);
+        out.sort(function(a, b) {
+          a = a[0].split(' ')[0];
+          b = b[0].split(' ')[0];
+          return a === b ? 0 : (a < b ? -1 : 1);
+        });
+        return out;
+      }, [])
+      .reduce(function(out, groups) {
+        out = out.concat(groups);
+        return out;
+      }, []);
   };
 
   rl.on('line', onLine);

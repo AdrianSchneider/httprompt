@@ -1,29 +1,33 @@
 'use strict';
 
-var request        = require('request');
-var readline       = require('readline');
-var Prompt         = require('./ui/prompt');
-var Profile        = require('./ui/profile');
-var HttpCommands   = require('./ui/commands/http');
-var ConfigCommands = require('./ui/commands/config');
-var Renderer       = require('./ui/renderer');
-var HttpClient     = require('./http/client');
+var request         = require('request');
+var readline        = require('readline');
+var Prompt          = require('./ui/prompt');
+var Profile         = require('./ui/profile');
+var HttpCommands    = require('./ui/commands/http');
+var HistoryCommands = require('./ui/commands/history');
+var ConfigCommands  = require('./ui/commands/config');
+var Renderer        = require('./ui/renderer');
+var HttpClient      = require('./http/client');
 
 module.exports = function(config, stdin, stdout, baseUrl) {
+  var renderer = new Renderer(config, {
+    console: require('./ui/renderers/console'),
+    jsonfui: require('./ui/renderers/jsonfui')
+  });
+
+  var client = new HttpClient(new Profile(baseUrl));
+
   var commandProviders = [
     new ConfigCommands(config),
-    new HttpCommands(new HttpClient(new Profile(baseUrl)))
+    new HistoryCommands(client, renderer),
+    new HttpCommands(client)
   ];
 
-  var prompt = new Prompt(
+  return new Prompt(
     readline,
     commandProviders,
-    new Renderer(config, {
-      console: require('./ui/renderers/console'),
-      jsonfui: require('./ui/renderers/jsonfui')
-    }),
+    renderer,
     { input: stdin, output: stdout }
   );
-
-  return prompt;
 };
