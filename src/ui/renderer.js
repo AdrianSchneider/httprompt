@@ -46,7 +46,7 @@ module.exports = function(config, renderers) {
   var getExternalViewer = function(response) {
     var type = getContentType(response);
     if (!type || !config.get("external." + type)) {
-      return config.external;
+      return config.get('external');
     }
     return config.get("external." + type);
   };

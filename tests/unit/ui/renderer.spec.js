@@ -8,7 +8,10 @@ var HttpResponse = require('../../../src/http/response');
 describe('Renderer', function() {
 
   beforeEach(function() {
-    this.config = { "external": "console", "external.json": "external" };
+    this.config = (function() {
+      var conf = { "external": "console", "external.json": "external" };
+      return { get: function(key){ return conf[key] || null; } };
+    })();
     this.console = nodemock.mock();
     this.external = nodemock.mock();
     this.renderer = new Renderer(this.config, { console: this.console, external: this.external });
@@ -16,6 +19,7 @@ describe('Renderer', function() {
 
   afterEach(function() {
     this.console.assertThrows();
+    this.external.assertThrows();
   });
 
   describe('#render', function() {
