@@ -1,10 +1,14 @@
 'use strict';
 
 var HttpResponse = require('./response');
+var HttpProfile  = require('../ui/profile');
 
 module.exports = function HttpClient(profile, options, request) {
-  var history = [];
+  if (!(profile instanceof HttpProfile)) {
+    throw new Error('HttpClient expects an HttpProfile');
+  }
 
+  var history = [];
   if(!options) options = {};
   if(!options.maxHistory) options.maxHistory = 10;
   if(!request) request = require('request');
@@ -81,6 +85,19 @@ module.exports = function HttpClient(profile, options, request) {
    */
   this.getHistory = function() {
     return history;
+  };
+
+  /**
+   * Sets the active profile
+   *
+   * @param {HttpProfile} newProfile
+   */
+  this.switchProfile = function(newProfile) {
+    if (!(newProfile instanceof HttpProfile)) {
+      throw new TypeError('switchProfiles expects an HttpProfile');
+    }
+
+    profile = newProfile;
   };
 
 };

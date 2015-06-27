@@ -19,6 +19,8 @@ module.exports = function(config, renderers) {
       return done(new Error('Renderer ' + name + ' is not registered'));
     }
 
+    if(data instanceof Error) return renderers[name].renderError(data, done);
+
     renderers[name].renderResponse(data, done);
   };
 

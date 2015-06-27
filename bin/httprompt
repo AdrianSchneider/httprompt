@@ -7,20 +7,11 @@ var app     = require('../src/app');
 
 program
   .version('0.0.1')
-  .option('-b --baseurl [value]', 'Base URL')
-  .option('-p --password [value]', 'Password')
-  .option('-P --port', 'Port')
-  .option('-v --verbose')
-  .option('-H --headers', 'Only include headers')
+  .option('-p --profile [value]', 'Start with profile')
   .parse(process.argv);
 
-if(!program.baseurl) {
-  console.error('No baseurl set; set one with -b');
-  process.exit(0);
-}
-
 var configFilename = path.resolve(process.env.HOME, './.httprompt.json');
-app(configFilename, process.stdin, process.stdout, program.baseurl, function(err, prompt) {
+app(configFilename, process.stdin, process.stdout, program.profile || '', function(err, prompt) {
   if (err) {
     console.error(err);
     process.exit(1);
