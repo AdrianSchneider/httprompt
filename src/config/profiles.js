@@ -1,6 +1,8 @@
 'use strict';
 
 var _             = require('underscore');
+var EventEmitter  = require('events').EventEmitter;
+var util          = require('util');
 var ConfigProfile = require('./profile');
 
 /**
@@ -8,7 +10,8 @@ var ConfigProfile = require('./profile');
  *
  * @param {Object} rawProflies
  */
-module.exports = function ConfigProfiles(rawProfiles) {
+function ConfigProfiles(rawProfiles) {
+  var active;
   var profiles = _.mapObject(rawProfiles, function(rawProfile) {
     return ConfigProfile.fromConfig(rawProfile);
   });
@@ -28,6 +31,27 @@ module.exports = function ConfigProfiles(rawProfiles) {
   };
 
   /**
+   * Gets the active configuration profile
+   * Sets an empty one if none is active yet
+   *
+   * @return {ConfigProfile}
+   */
+  this.getActive = function() {
+    if(!active) active = new ConfigProfile('');
+    return active;
+  };
+
+  /**
+   * Switches to another profile
+   *
+   * @param {String} profileName
+   */
+  this.switchTo = function(profileName) {
+    active = this.get(profileName);
+    this.emit('switch', profileName);
+  };
+
+  /**
    * Returns a list of profiles
    *
    * @return {Array}
@@ -39,4 +63,7 @@ module.exports = function ConfigProfiles(rawProfiles) {
   this.add = function(rawData) {};
   this.remove = function(name) {};
 
-};
+}
+
+util.inherits(ConfigProfiles, EventEmitter);
+module.exports = ConfigProfiles;

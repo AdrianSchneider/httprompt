@@ -1,7 +1,6 @@
 'use strict';
 
 var HttpResponse  = require('./response');
-var ConfigProfile = require('../config/profile');
 
 /**
  * Responsible for making HTTP requests and managing client state
@@ -10,11 +9,7 @@ var ConfigProfile = require('../config/profile');
  * @param {Object} options
  * @param {Object} request library
  */
-module.exports = function HttpClient(profile, options, request) {
-  if (!(profile instanceof ConfigProfile)) {
-    throw new Error('HttpClient expects an ConfigProfile');
-  }
-
+module.exports = function HttpClient(profiles, options, request) {
   var history = [];
   if(!options) options = {};
   if(!options.maxHistory) options.maxHistory = 10;
@@ -30,8 +25,8 @@ module.exports = function HttpClient(profile, options, request) {
     }
 
     request.get(
-      profile.buildUrl(url),
-      profile.buildOptions(query),
+      profiles.getActive().buildUrl(url),
+      profiles.getActive().buildOptions(query),
       handleResponse(done)
     );
   };
@@ -41,8 +36,8 @@ module.exports = function HttpClient(profile, options, request) {
    */
   this.put = function(url, data, done) {
     request.put(
-      profile.buildUrl(url),
-      profile.buildOptions({}, data),
+      profiles.getActive().buildUrl(url),
+      profiles.getActive().buildOptions({}, data),
       handleResponse(done)
     );
   };
@@ -52,8 +47,8 @@ module.exports = function HttpClient(profile, options, request) {
    */
   this.post = function(url, data, done) {
     request.post(
-      profile.buildUrl(url),
-      profile.buildOptions({}, data),
+      profiles.getActive().buildUrl(url),
+      profiles.getActive().buildOptions({}, data),
       handleResponse(done)
     );
   };
@@ -63,8 +58,8 @@ module.exports = function HttpClient(profile, options, request) {
    */
   this.del = function(url, done) {
     request.del(
-      profile.buildUrl(url),
-      profile.buildOptions(),
+      profiles.getActive().buildUrl(url),
+      profiles.getActive().buildOptions(),
       handleResponse(done)
     );
   };
@@ -92,20 +87,6 @@ module.exports = function HttpClient(profile, options, request) {
    */
   this.getHistory = function() {
     return history;
-  };
-
-  /**
-   * Sets the active profile
-   *
-   * @param {ConfigProfile} newProfile
-   */
-  this.switchProfile = function(newProfile) {
-    if (!(newProfile instanceof ConfigProfile)) {
-      throw new TypeError('switchProfiles expects an ConfigProfile');
-    }
-
-    console.error('Switching to another profile');
-    profile = newProfile;
   };
 
 };

@@ -50,8 +50,12 @@ module.exports = function ConfigCommands(config, client) {
    * @param {Function} done
    */
   var handleSwitch = function(profile, done) {
-    client.switchProfile(config.getProfiles().get(profile));
-    done();
+    try {
+      config.getProfiles().switchTo(profile);
+      done();
+    } catch (e) {
+      return done(e);
+    }
   };
 
   /**
