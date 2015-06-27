@@ -1,11 +1,18 @@
 'use strict';
 
-var HttpResponse = require('./response');
-var HttpProfile  = require('../ui/profile');
+var HttpResponse  = require('./response');
+var ConfigProfile = require('../config/profile');
 
+/**
+ * Responsible for making HTTP requests and managing client state
+ *
+ * @param {ServerProfile} profile
+ * @param {Object} options
+ * @param {Object} request library
+ */
 module.exports = function HttpClient(profile, options, request) {
-  if (!(profile instanceof HttpProfile)) {
-    throw new Error('HttpClient expects an HttpProfile');
+  if (!(profile instanceof ConfigProfile)) {
+    throw new Error('HttpClient expects an ConfigProfile');
   }
 
   var history = [];
@@ -90,13 +97,14 @@ module.exports = function HttpClient(profile, options, request) {
   /**
    * Sets the active profile
    *
-   * @param {HttpProfile} newProfile
+   * @param {ConfigProfile} newProfile
    */
   this.switchProfile = function(newProfile) {
-    if (!(newProfile instanceof HttpProfile)) {
-      throw new TypeError('switchProfiles expects an HttpProfile');
+    if (!(newProfile instanceof ConfigProfile)) {
+      throw new TypeError('switchProfiles expects an ConfigProfile');
     }
 
+    console.error('Switching to another profile');
     profile = newProfile;
   };
 

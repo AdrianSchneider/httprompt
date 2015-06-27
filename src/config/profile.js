@@ -5,7 +5,7 @@
  *
  * @param {String} baseUrl
  */
-function ServerProfile(baseUrl) {
+function ConfigProfile(baseUrl) {
 
   /**
    * Generates a URL, combining the base URL with the additional path
@@ -34,8 +34,8 @@ function ServerProfile(baseUrl) {
   };
 }
 
-ServerProfile.fromConfig = function(config) {
-  return new ServerProfile(config.baseUrl);
+ConfigProfile.fromConfig = function(config) {
+  return new ConfigProfile(config.baseUrl);
 };
 
-module.exports = ServerProfile;
+module.exports = ConfigProfile;

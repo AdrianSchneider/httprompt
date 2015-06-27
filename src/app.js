@@ -3,13 +3,13 @@
 var request           = require('request');
 var readline          = require('readline');
 var Prompt            = require('./ui/prompt');
-var Profile           = require('./ui/profile');
 var HttpCommands      = require('./ui/commands/http');
 var HistoryCommands   = require('./ui/commands/history');
 var ConfigCommands    = require('./ui/commands/config');
 var ProfileCommands   = require('./ui/commands/profiles');
 var Renderer          = require('./ui/renderer');
 var HttpClient        = require('./http/client');
+var Profile           = require('./config/profile');
 var ConfigPersistence = require('./config/persistence');
 
 /**

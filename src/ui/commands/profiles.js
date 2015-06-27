@@ -1,14 +1,12 @@
 'use strict';
 
-var HttpProfile = require('../profile');
-
 /**
  * Profile management commands
  *
  * @param {Object} config
  */
 module.exports = function ConfigCommands(config, client) {
-  var keywords = ['profiles list', 'profiles set', 'profiles switch'];
+  var keywords = ['profiles list', 'profiles switch'];
 
   /**
    * Check if this should handle the line
@@ -32,15 +30,17 @@ module.exports = function ConfigCommands(config, client) {
   this.process = function(line, done) {
     var items = line.toLowerCase().split(' ');
     if (items[1] === 'list') return handleList(done);
+    if (items[1] === 'switch') return handleSwitch(items[2], done);
     done();
   };
 
+  /**
+   * Lists the profile names
+   *
+   * @param {Function} done
+   */
   var handleList = function(done) {
-    done(null, Object.keys(config.get('profiles') || []));
-  };
-
-  var handleSet = function(key, value, done) {
-
+    done(null, config.getProfiles().getList());
   };
 
   /**
@@ -50,11 +50,8 @@ module.exports = function ConfigCommands(config, client) {
    * @param {Function} done
    */
   var handleSwitch = function(profile, done) {
-    client.switchProfile(
-      HttpProfile.fromConfig(
-        config.get('profiles')[profile]
-      )
-    );
+    client.switchProfile(config.getProfiles().get(profile));
+    done();
   };
 
   /**
@@ -64,7 +61,8 @@ module.exports = function ConfigCommands(config, client) {
    */
   this.getHelp = function() {
     return [
-      'profiles list'
+      'profiles list',
+      'profiles switch <profileName>'
     ];
   };
 

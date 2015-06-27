@@ -1,6 +1,16 @@
 'use strict';
 
+var ConfigProfiles = require('./profiles');
+
+/**
+ * Wraps the raw config object adding a bit of safety
+ * and collecting the configuration profiles
+ *
+ * @param {Object} data
+ */
 module.exports = function Config(data) {
+  var profiles = new ConfigProfiles(data.profiles || {});
+
   /**
    * Checks if a key exists
    *
@@ -38,6 +48,15 @@ module.exports = function Config(data) {
    */
   this.serialize = function() {
     return JSON.stringify(data, null, 2);
+  };
+
+  /**
+   * Gets the configuration profiles
+   *
+   * @return {ConfigProfiles}
+   */
+  this.getProfiles = function() {
+    return profiles;
   };
 
 };
