@@ -2,6 +2,7 @@
 'use strict';
 
 var program = require('commander');
+var path    = require('path');
 var app     = require('../src/app');
 
 program
@@ -18,6 +19,12 @@ if(!program.baseurl) {
   process.exit(0);
 }
 
-var config = require('../src/config')();
-var prompt = app(config, process.stdin, process.stdout, program.baseurl);
-prompt.start();
+var configFilename = path.resolve(process.env.HOME, './.httprompt.json');
+app(configFilename, process.stdin, process.stdout, program.baseurl, function(err, prompt) {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
+
+  prompt.start();
+});

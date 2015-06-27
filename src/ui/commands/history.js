@@ -13,7 +13,7 @@ module.exports = function HistoryCommands(client, renderer) {
     var history = client.getHistory();
     var latest = _.last(history);
     if (!latest) return done(null, 'No response to show');
-    renderer.renderExternal(latest);
+    renderer.renderExternal(latest, done);
   };
 
   this.getHelp = function() {
