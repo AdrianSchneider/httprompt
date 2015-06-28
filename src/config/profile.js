@@ -1,6 +1,7 @@
 'use strict';
 
-var _ = require('underscore');
+var _       = require('underscore');
+var Session = require('../session/session');
 
 /**
  * Represents a configuration profile for a server
@@ -9,10 +10,18 @@ var _ = require('underscore');
  */
 function ConfigProfile(baseUrl, actions) {
   if (!actions) actions = {};
+  var session;
 
-  var session = {
-    headers: {} ,
-    nextHeaders: {}
+  /**
+   * Called whenever switching to this profile
+   * Ensures a session is ready
+   */
+  this.activate = function() {
+    if (!session) session = new Session(this);
+  };
+
+  this.getSession = function() {
+    return session;
   };
 
   /**
@@ -37,44 +46,14 @@ function ConfigProfile(baseUrl, actions) {
     return {
       json    : data    || {},
       query   : query   || {},
-      headers : prepareHeaders(headers || {})
+      headers : session.prepareHeaders(headers)
     };
-  };
-
-  /**
-   * Merges all of the headers into what hits the client
-   *
-   * @param {Object} headers
-   * @return {Object} merged headers
-   */
-  var prepareHeaders = function(headers) {
-    var out =  _.extend(
-      {},
-      headers,
-      session.nextHeaders,
-      session.headers
-    );
-
-    session.nextHeaders = {};
-    return out;
   };
 
   this.getActions = function() {
     return actions;
   };
 
-  this.setHeader = function(header, value) {
-    session.headers[header] = value;
-  };
-
-  this.setNextHeader = function(header, value) {
-    session.nextHeaders[header] = value;
-  };
-
-  this.unsetHeader = function(header) {
-    delete session.headers[header];
-    delete session.nextHeaders[header];
-  };
 }
 
 ConfigProfile.fromConfig = function(config) {

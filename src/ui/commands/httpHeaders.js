@@ -8,7 +8,7 @@ var _ = require('underscore');
  * @author Adrian Schneider <adrian@compiledintent.com>
  * @param {HttpClient} client
  */
-module.exports = function HttpHeaderCommands(client) {
+module.exports = function HttpHeaderCommands(user) {
   var commands = ['header set', 'header stick', 'header unset'];
 
   /**
@@ -35,9 +35,11 @@ module.exports = function HttpHeaderCommands(client) {
     var header = items[2];
     var value  = items[3];
 
-    if (action === 'set')   client.setNextHeader(header, value);
-    if (action === 'stick') client.setHeader(header, value);
-    if (action === 'unset') client.unsetHeader(header, value);
+    var session = user.getSession();
+
+    if (action === 'set')   session.setNextHeader(header, value);
+    if (action === 'stick') session.setHeader(header, value);
+    if (action === 'unset') session.unsetHeader(header, value);
 
     done();
   };

@@ -47,7 +47,9 @@ function ConfigProfiles(rawProfiles) {
    * @param {String} profileName
    */
   this.switchTo = function(profileName) {
-    active = this.get(profileName);
+    var profile = this.get(profileName);
+    profile.activate();
+    active = profile;
     this.emit('switch', profileName);
   };
 

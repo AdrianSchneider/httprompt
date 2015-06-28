@@ -9,10 +9,8 @@ var HttpResponse  = require('./response');
  * @param {Object} options
  * @param {Object} request library
  */
-module.exports = function HttpClient(profiles, options, request) {
-  var history = [];
+module.exports = function HttpClient(user, options, request) {
   if(!options) options = {};
-  if(!options.maxHistory) options.maxHistory = 10;
   if(!request) request = require('request');
 
   /**
@@ -25,8 +23,8 @@ module.exports = function HttpClient(profiles, options, request) {
     }
 
     request.get(
-      profiles.getActive().buildUrl(url),
-      profiles.getActive().buildOptions(query),
+      user.getSession().buildUrl(url),
+      user.getSession().buildOptions(query),
       handleResponse(done)
     );
   };
@@ -36,8 +34,8 @@ module.exports = function HttpClient(profiles, options, request) {
    */
   this.put = function(url, data, done) {
     request.put(
-      profiles.getActive().buildUrl(url),
-      profiles.getActive().buildOptions({}, data),
+      user.getSession().buildUrl(url),
+      user.getSession().buildOptions({}, data),
       handleResponse(done)
     );
   };
@@ -47,8 +45,8 @@ module.exports = function HttpClient(profiles, options, request) {
    */
   this.post = function(url, data, done) {
     request.post(
-      profiles.getActive().buildUrl(url),
-      profiles.getActive().buildOptions({}, data),
+      user.getSession().buildUrl(url),
+      user.getSession().buildOptions({}, data),
       handleResponse(done)
     );
   };
@@ -58,8 +56,8 @@ module.exports = function HttpClient(profiles, options, request) {
    */
   this.del = function(url, done) {
     request.del(
-      profiles.getActive().buildUrl(url),
-      profiles.getActive().buildOptions(),
+      user.getSession().buildUrl(url),
+      user.getSession().buildOptions(),
       handleResponse(done)
     );
   };
@@ -74,31 +72,8 @@ module.exports = function HttpClient(profiles, options, request) {
   var handleResponse = function(done) {
     return function(err, res, body) {
       if(err) return done(err);
-      var response = new HttpResponse(res, body);
-      history.push(response);
-      return done(null, response);
+      return done(null, new HttpResponse(res, body));
     };
-  };
-
-  /**
-   * Returns the history
-   *
-   * @return Array
-   */
-  this.getHistory = function() {
-    return history;
-  };
-
-  this.setNextHeader = function(header, value) {
-    profiles.getActive().setNextHeader(header, value);
-  };
-
-  this.setHeader = function(header, value) {
-    profiles.getActive().setHeader(header, value);
-  };
-
-  this.unsetHeader = function(header) {
-    profiles.getActive().unsetHeader(header);
   };
 
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function Dispatcher(commands) {
+module.exports = function Dispatcher(user, commands) {
   var dispatcher = this;
 
   commands.filter(function(command) {
@@ -21,6 +21,8 @@ module.exports = function Dispatcher(commands) {
     if (!matched) return done(null, false);
     return matched.process(line, function(err, result) {
       if (err) return done(err);
+
+      user.emit('entry', line, result);
       return done(null, true, result);
     });
   };

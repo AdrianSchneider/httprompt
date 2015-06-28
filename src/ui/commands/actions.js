@@ -10,7 +10,7 @@ var async = require('async');
  * @param {ConfigProfiles] profiles
  * @param {PromptDispatcher} dispatcher
  */
-module.exports = function CustomActionCommands(profiles) {
+module.exports = function CustomActionCommands(user) {
   var matchers = [];
   var processors = [];
   var dispatcher;
@@ -70,7 +70,7 @@ module.exports = function CustomActionCommands(profiles) {
     });
   };
 
-  changeProfile(profiles.getActive());
-  profiles.on('switch', changeProfile);
+  changeProfile(user.getActiveProfile());
+  user.on('switch', changeProfile);
 
 };

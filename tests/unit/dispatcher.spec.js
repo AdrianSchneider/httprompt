@@ -1,11 +1,13 @@
 'use strict';
 
-var expect = require('chai').expect;
+var expect     = require('chai').expect;
+var nodemock   = require('nodemock');
 var Dispatcher = require('../../src/dispatcher');
 
 describe('Dispatcher', function() {
 
   beforeEach(function() {
+    this.user = nodemock.mock();
     this.commands = [{
       match: function(line) { return line === 'a'; },
       process: function(line, done) { done(null, { name: 'sup' }); }
@@ -13,10 +15,18 @@ describe('Dispatcher', function() {
       match: function(line) { return line === 'fail'; },
       process: function(line, done) { done(new Error('failed')); }
     }];
-    this.dispatcher = new Dispatcher(this.commands);
+    this.dispatcher = new Dispatcher(this.user, this.commands);
+  });
+
+  afterEach(function() {
+    this.user.assertThrows();
   });
 
   it('Calls with true,result when matching succesfully', function(done) {
+    this.user
+      .mock('log')
+      .takes('a', { name: 'sup' });
+
     this.dispatcher.dispatch('a', function(err, status, result) {
       if(err) return done(err);
       expect(status).to.equal(true);

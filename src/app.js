@@ -2,6 +2,7 @@
 
 var request            = require('request');
 var readline           = require('readline');
+var User               = require('./user');
 var Dispatcher         = require('./dispatcher');
 var Prompt             = require('./ui/prompt');
 var HttpCommands       = require('./ui/commands/http');
@@ -26,27 +27,27 @@ var ConfigPersistence  = require('./config/persistence');
  * @param {Function} done
  */
 module.exports = function(configFilename, stdin, stdout, profileName, done) {
+
   var loader = new ConfigPersistence(configFilename);
   loader.load(function(err, config) {
     if (err) return done(err);
 
-    var configProfiles = config.getProfiles();
-
+    var user = new User(config);
     try {
-      if (profileName) configProfiles.switchTo(profileName);
+      if (profileName) user.switchProfile(profileName);
     } catch (e) {
       return done(e);
     }
 
-    var client = new HttpClient(configProfiles);
+    var client = new HttpClient(user);
 
-    var dispatcher = new Dispatcher([
+    var dispatcher = new Dispatcher(user, [
       new ConfigCommands(config),
       new HistoryCommands(client, renderer),
       new ProfileCommands(config, client),
       new HttpCommands(client),
-      new HttpHeaderCommands(client),
-      new CustomCommands(configProfiles)
+      new HttpHeaderCommands(user),
+      new CustomCommands(user)
     ]);
 
     var renderer = new Renderer(config, {
