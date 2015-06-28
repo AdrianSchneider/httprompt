@@ -1,18 +1,19 @@
 'use strict';
 
-var request           = require('request');
-var readline          = require('readline');
-var Dispatcher        = require('./dispatcher');
-var Prompt            = require('./ui/prompt');
-var HttpCommands      = require('./ui/commands/http');
-var HistoryCommands   = require('./ui/commands/history');
-var ConfigCommands    = require('./ui/commands/config');
-var ProfileCommands   = require('./ui/commands/profiles');
-var CustomCommands    = require('./ui/commands/actions');
-var Renderer          = require('./ui/renderer');
-var HttpClient        = require('./http/client');
-var Profile           = require('./config/profile');
-var ConfigPersistence = require('./config/persistence');
+var request            = require('request');
+var readline           = require('readline');
+var Dispatcher         = require('./dispatcher');
+var Prompt             = require('./ui/prompt');
+var HttpCommands       = require('./ui/commands/http');
+var HttpHeaderCommands = require('./ui/commands/httpHeaders');
+var HistoryCommands    = require('./ui/commands/history');
+var ConfigCommands     = require('./ui/commands/config');
+var ProfileCommands    = require('./ui/commands/profiles');
+var CustomCommands     = require('./ui/commands/actions');
+var Renderer           = require('./ui/renderer');
+var HttpClient         = require('./http/client');
+var Profile            = require('./config/profile');
+var ConfigPersistence  = require('./config/persistence');
 
 /**
  * Application setup
@@ -44,6 +45,7 @@ module.exports = function(configFilename, stdin, stdout, profileName, done) {
       new HistoryCommands(client, renderer),
       new ProfileCommands(config, client),
       new HttpCommands(client),
+      new HttpHeaderCommands(client),
       new CustomCommands(configProfiles)
     ]);
 

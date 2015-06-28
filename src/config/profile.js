@@ -1,5 +1,7 @@
 'use strict';
 
+var _ = require('underscore');
+
 /**
  * Represents a configuration profile for a server
  *
@@ -7,6 +9,11 @@
  */
 function ConfigProfile(baseUrl, actions) {
   if (!actions) actions = {};
+
+  var session = {
+    headers: {} ,
+    nextHeaders: {}
+  };
 
   /**
    * Generates a URL, combining the base URL with the additional path
@@ -30,12 +37,43 @@ function ConfigProfile(baseUrl, actions) {
     return {
       json    : data    || {},
       query   : query   || {},
-      headers : headers || {}
+      headers : prepareHeaders(headers || {})
     };
+  };
+
+  /**
+   * Merges all of the headers into what hits the client
+   *
+   * @param {Object} headers
+   * @return {Object} merged headers
+   */
+  var prepareHeaders = function(headers) {
+    var out =  _.extend(
+      {},
+      headers,
+      session.nextHeaders,
+      session.headers
+    );
+
+    session.nextHeaders = {};
+    return out;
   };
 
   this.getActions = function() {
     return actions;
+  };
+
+  this.setHeader = function(header, value) {
+    session.headers[header] = value;
+  };
+
+  this.setNextHeader = function(header, value) {
+    session.nextHeaders[header] = value;
+  };
+
+  this.unsetHeader = function(header) {
+    delete session.headers[header];
+    delete session.nextHeaders[header];
   };
 }
 

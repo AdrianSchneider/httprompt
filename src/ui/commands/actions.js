@@ -50,6 +50,7 @@ module.exports = function CustomActionCommands(profiles) {
       });
     }, function(err) {
       if (err) return done(err);
+      console.error('w00t');
       return done();
     });
   };

@@ -89,4 +89,16 @@ module.exports = function HttpClient(profiles, options, request) {
     return history;
   };
 
+  this.setNextHeader = function(header, value) {
+    profiles.getActive().setNextHeader(header, value);
+  };
+
+  this.setHeader = function(header, value) {
+    profiles.getActive().setHeader(header, value);
+  };
+
+  this.unsetHeader = function(header) {
+    profiles.getActive().unsetHeader(header);
+  };
+
 };
