@@ -5,7 +5,8 @@
  *
  * @param {String} baseUrl
  */
-function ConfigProfile(baseUrl) {
+function ConfigProfile(baseUrl, actions) {
+  if (!actions) actions = {};
 
   /**
    * Generates a URL, combining the base URL with the additional path
@@ -32,10 +33,14 @@ function ConfigProfile(baseUrl) {
       headers : headers || {}
     };
   };
+
+  this.getActions = function() {
+    return actions;
+  };
 }
 
 ConfigProfile.fromConfig = function(config) {
-  return new ConfigProfile(config.baseUrl);
+  return new ConfigProfile(config.baseUrl, config.actions || {});
 };
 
 module.exports = ConfigProfile;

@@ -2,6 +2,7 @@
 
 var request           = require('request');
 var readline          = require('readline');
+var Dispatcher        = require('./dispatcher');
 var Prompt            = require('./ui/prompt');
 var HttpCommands      = require('./ui/commands/http');
 var HistoryCommands   = require('./ui/commands/history');
@@ -28,25 +29,32 @@ module.exports = function(configFilename, stdin, stdout, profileName, done) {
   loader.load(function(err, config) {
     if (err) return done(err);
 
-    var renderer = new Renderer(config, {
-      console: require('./ui/renderers/console'),
-      jsonfui: require('./ui/renderers/jsonfui')
-    });
-
     var configProfiles = config.getProfiles();
+
+    try {
+      if (profileName) configProfiles.switchTo(profileName);
+    } catch (e) {
+      return done(e);
+    }
+
     var client = new HttpClient(configProfiles);
 
-    var commandProviders = [
+    var dispatcher = new Dispatcher([
       new ConfigCommands(config),
       new HistoryCommands(client, renderer),
       new ProfileCommands(config, client),
       new HttpCommands(client),
       new CustomCommands(configProfiles)
-    ];
+    ]);
+
+    var renderer = new Renderer(config, {
+      console: require('./ui/renderers/console'),
+      jsonfui: require('./ui/renderers/jsonfui')
+    });
 
     var prompt = new Prompt(
       readline,
-      commandProviders,
+      dispatcher,
       renderer,
       { input: stdin, output: stdout }
     );
