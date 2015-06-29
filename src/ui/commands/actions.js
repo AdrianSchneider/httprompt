@@ -70,7 +70,7 @@ module.exports = function CustomActionCommands(user) {
     });
   };
 
-  changeProfile(user.getActiveProfile());
+  changeProfile(user.getProfile());
   user.on('switch', changeProfile);
 
 };

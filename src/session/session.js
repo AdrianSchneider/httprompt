@@ -1,59 +1,40 @@
 'use strict';
 
-var _             = require('underscore');
-var History       = require('./history');
+var util         = require('util');
+var EventEmitter = require('events').EventEmitter;
 var ConfigProfile = require('../config/profile');
 
 /**
- * Represents a user session with the prompt
+ * Represents the user's session with the prompt
  *
- * @param {ConfigProfile} profile
+ * @param {ConfigProfiles} profiles
+ * @param {String|null}    profileName
  */
-module.exports = function Session(profile) {
-//  if (!(profile instanceof ConfigProfile)) {
-//    throw new TypeError('Session requires a valid ConfigProfile');
-//  }
+function Session(profiles, profileName) {
+  EventEmitter.call(this);
+  var profile;
 
-  var headers = [];
-  var nextHeaders = [];
-  var history = new History();
-
+  /**
+   * Gets the active profile
+   * @return {ConfigProfile}
+   */
   this.getProfile = function() {
     return profile;
   };
 
-  this.setHeader = function(header, value) {
-    headers[header] = value;
-  };
-
-  this.setNextHeader = function(header, value) {
-    nextHeaders[header] = value;
-  };
-
-  this.unsetHeader = function(header) {
-    delete headers[header];
-    delete nextHeaders[header];
-  };
-
-  this.buildUrl = function(path) {
-    return profile.buildUrl(path);
-  };
-
-  this.buildOptions = function(query, data, headers) {
-    return profile.buildOptions(query, data, headers);
-  };
-
-
   /**
-   * Merges all of the headers into what hits the client
-   *
-   * @param {Object} headers
-   * @return {Object} merged headers
+   * Switches the active profile
+   * @param {String} name
    */
-  this.prepareHeaders = function(specficHeaders) {
-    var merged =  _.extend({}, specficHeaders, headers, nextHeaders);
-    nextHeaders = {};
-    return merged;
+  this.switchProfile = function(name) {
+    profile = profiles.get(name);
+    profiles.apply(function(p) { p.deactivate(); });
+    profile.activate(this);
+    this.emit('profiles.switch', profile);
   };
 
-};
+  if (profileName) this.switchProfile(profileName);
+}
+
+util.inherits(Session, EventEmitter);
+module.exports = Session;

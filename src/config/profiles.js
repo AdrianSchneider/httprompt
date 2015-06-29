@@ -1,8 +1,6 @@
 'use strict';
 
 var _             = require('underscore');
-var EventEmitter  = require('events').EventEmitter;
-var util          = require('util');
 var ConfigProfile = require('./profile');
 
 /**
@@ -10,8 +8,7 @@ var ConfigProfile = require('./profile');
  *
  * @param {Object} rawProflies
  */
-function ConfigProfiles(rawProfiles) {
-  var active;
+module.exports = function ConfigProfiles(rawProfiles) {
   var profiles = _.mapObject(rawProfiles, function(rawProfile) {
     return ConfigProfile.fromConfig(rawProfile);
   });
@@ -24,33 +21,11 @@ function ConfigProfiles(rawProfiles) {
    * @throws {Error} Invalid profile name
    */
   this.get = function(name) {
+    if (!name) return new ConfigProfile('');
     if(typeof profiles[name] === 'undefined') {
       throw new Error('Profile ' + name + ' does not exist');
     }
     return profiles[name];
-  };
-
-  /**
-   * Gets the active configuration profile
-   * Sets an empty one if none is active yet
-   *
-   * @return {ConfigProfile}
-   */
-  this.getActive = function() {
-    if(!active) active = new ConfigProfile('');
-    return active;
-  };
-
-  /**
-   * Switches to another profile
-   *
-   * @param {String} profileName
-   */
-  this.switchTo = function(profileName) {
-    var profile = this.get(profileName);
-    profile.activate();
-    active = profile;
-    this.emit('switch', profileName);
   };
 
   /**
@@ -65,7 +40,8 @@ function ConfigProfiles(rawProfiles) {
   this.add = function(rawData) {};
   this.remove = function(name) {};
 
-}
+  this.apply = function(f) {
+    _.values(profiles).forEach(f);
+  };
 
-util.inherits(ConfigProfiles, EventEmitter);
-module.exports = ConfigProfiles;
+};

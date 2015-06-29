@@ -23,8 +23,8 @@ module.exports = function HttpClient(user, options, request) {
     }
 
     request.get(
-      user.getSession().buildUrl(url),
-      user.getSession().buildOptions(query),
+      user.buildUrl(url),
+      user.buildOptions(query),
       handleResponse(done)
     );
   };
@@ -34,8 +34,8 @@ module.exports = function HttpClient(user, options, request) {
    */
   this.put = function(url, data, done) {
     request.put(
-      user.getSession().buildUrl(url),
-      user.getSession().buildOptions({}, data),
+      user.buildUrl(url),
+      user.buildOptions({}, data),
       handleResponse(done)
     );
   };
@@ -45,8 +45,8 @@ module.exports = function HttpClient(user, options, request) {
    */
   this.post = function(url, data, done) {
     request.post(
-      user.getSession().buildUrl(url),
-      user.getSession().buildOptions({}, data),
+      user.buildUrl(url),
+      user.buildOptions({}, data),
       handleResponse(done)
     );
   };
@@ -56,8 +56,8 @@ module.exports = function HttpClient(user, options, request) {
    */
   this.del = function(url, done) {
     request.del(
-      user.getSession().buildUrl(url),
-      user.getSession().buildOptions(),
+      user.buildUrl(url),
+      user.buildOptions(),
       handleResponse(done)
     );
   };

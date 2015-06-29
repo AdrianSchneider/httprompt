@@ -2,7 +2,6 @@
 
 var request            = require('request');
 var readline           = require('readline');
-var User               = require('./user');
 var Dispatcher         = require('./dispatcher');
 var Prompt             = require('./ui/prompt');
 var HttpCommands       = require('./ui/commands/http');
@@ -15,6 +14,7 @@ var Renderer           = require('./ui/renderer');
 var HttpClient         = require('./http/client');
 var Profile            = require('./config/profile');
 var ConfigPersistence  = require('./config/persistence');
+var Session            = require('./session/session');
 
 /**
  * Application setup
@@ -32,9 +32,9 @@ module.exports = function(configFilename, stdin, stdout, profileName, done) {
   loader.load(function(err, config) {
     if (err) return done(err);
 
-    var user = new User(config);
+    var user;
     try {
-      if (profileName) user.switchProfile(profileName);
+      user = new Session(config.getProfiles(), profileName);
     } catch (e) {
       return done(e);
     }

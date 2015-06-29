@@ -1,7 +1,7 @@
 'use strict';
 
-var _       = require('underscore');
-var Session = require('../session/session');
+var _         = require('underscore');
+var Namespace = require('../session/namespace');
 
 /**
  * Represents a configuration profile for a server
@@ -11,13 +11,30 @@ var Session = require('../session/session');
 function ConfigProfile(baseUrl, actions) {
   if (!actions) actions = {};
   var session;
+  var active = false;
 
   /**
    * Called whenever switching to this profile
    * Ensures a session is ready
    */
-  this.activate = function() {
-    if (!session) session = new Session(this);
+  this.activate = function(userSession) {
+    active = true;
+    if (!session) {
+      session = new Namespace(this);
+      userSession.on('entry', function(line, response) {
+        if (active) {
+          session.log(line, response);
+        }
+      });
+    }
+  };
+
+  /**
+   * Called when the profile is deactivated
+   * Disables logging to session when profile is inactive
+   */
+  this.deactivate = function(userSession) {
+    active = false;
   };
 
   this.getSession = function() {
@@ -56,6 +73,12 @@ function ConfigProfile(baseUrl, actions) {
 
 }
 
+/**
+ * Instantiates a new ConfigProfile from config
+ *
+ * @param {Object} config
+ * @return {ConfigProfile}
+ */
 ConfigProfile.fromConfig = function(config) {
   return new ConfigProfile(config.baseUrl, config.actions || {});
 };

@@ -35,11 +35,9 @@ module.exports = function HttpHeaderCommands(user) {
     var header = items[2];
     var value  = items[3];
 
-    var session = user.getSession();
-
-    if (action === 'set')   session.setNextHeader(header, value);
-    if (action === 'stick') session.setHeader(header, value);
-    if (action === 'unset') session.unsetHeader(header, value);
+    if (action === 'set')   user.setNextHeader(header, value);
+    if (action === 'stick') user.setHeader(header, value);
+    if (action === 'unset') user.unsetHeader(header, value);
 
     done();
   };

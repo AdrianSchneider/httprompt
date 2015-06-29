@@ -22,7 +22,7 @@ module.exports = function Dispatcher(user, commands) {
     return matched.process(line, function(err, result) {
       if (err) return done(err);
 
-      user.emit('entry', line, result);
+      //user.emit('entry', line, result);
       return done(null, true, result);
     });
   };
