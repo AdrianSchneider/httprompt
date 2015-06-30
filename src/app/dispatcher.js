@@ -9,10 +9,11 @@ var expander = require('../utils/expander');
  * using the many command providers
  *
  * @param {Session} session
- * @param {Array}   commands
+ * @param {Array}   baseCommands
  */
-module.exports = function Dispatcher(session, commands) {
+module.exports = function Dispatcher(session, baseCommands) {
   var dispatcher = this;
+  var commands = [].concat(baseCommands);
 
   commands.forEach(function(command) {
     command.setDispatcher(this);
@@ -43,10 +44,33 @@ module.exports = function Dispatcher(session, commands) {
     return command;
   };
 
+  /**
+   * Refreshes the commands based on the session
+   */
+  var refreshCommands = function() {
+    commands = [].concat(baseCommands);
+
+    commands.forEach(function(command) {
+      command.setDispatcher(dispatcher);
+    });
+  };
+
   var preprocess = function(request) {
     return request;
   };
 
+  /**
+   * Returns the built-in commands
+   * @return {Array<Command>}
+   */
+  this.getBaseCommands = function() {
+    return baseCommands;
+  };
+
+  /**
+   * Returns all of the commands (built-in and custom)
+   * @return {Array<Command>}
+   */
   this.getCommands = function() {
     return commands;
   };

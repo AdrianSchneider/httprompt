@@ -1,6 +1,9 @@
 'use strict';
 
 var _         = require('underscore');
+var async     = require('async');
+var Command   = require('../app/commands/command');
+var Request   = require('../app/request');
 var Namespace = require('../session/namespace');
 
 /**
@@ -67,8 +70,30 @@ function ConfigProfile(baseUrl, actions) {
     };
   };
 
-  this.getActions = function() {
-    return actions;
+  /**
+   * Gets custom commands from this profile
+   * Each command just runs all lines against the dispatcher
+   *
+   * @return {Array}
+   */
+  this.getCommands = function(dispatcher) {
+    return Object.keys(actions).map(function(actionString) {
+      return new Command(
+        actionString,
+        function(request, done) {
+          async.eachSeries(actions[actionString], function(line, next) {
+            dispatcher.dispatch(new Request(line), function(err, result, response) {
+              if (err) return next(err);
+              if (!result) return next(new Error('"' + line + ' does not match any commands'));
+              return next();
+            });
+          }, function(err) {
+            if (err) return done(err);
+            return done();
+          });
+        }
+      );
+    });
   };
 
 }
