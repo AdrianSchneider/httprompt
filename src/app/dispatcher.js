@@ -1,5 +1,7 @@
 'use strict';
 
+var _        = require('underscore');
+var async    = require('async');
 var expander = require('./utils/expander');
 
 /**
@@ -20,23 +22,29 @@ module.exports = function Dispatcher(session, commands) {
    * Dispatches commands in the form of free text lines, and
    * delegates work to matched commands
    *
-   * @param {String} line
+   * @param {Request} request
    * @param {Function} done - err,matched,result
    */
-  this.dispatch = function(line, done) {
-    line = preprocessLine(line);
-    var matched = commands.filter(function(provider) { return provider.match(line); })[0];
-    if (!matched) return done(null, false);
-    return matched.process(line, function(err, result) {
-      if (err) return done(err);
+  this.dispatch = function(request, done) {
+    preprocess(request);
 
-      //session.emit('entry', line, result);
+    var command = getMatchingCommand(request);
+    if (!command) return done(null, false);
+
+    return command.process(request, function(err, result) {
+      if (err) return done(err);
       return done(null, true, result);
     });
   };
 
-  var preprocessLine = function(line) {
-    return line;
+  var getMatchingCommand = function(request) {
+    var command = _.first(commands.filter(function(command) { return command.match(request); }));
+    if (request) request.setCommand(command);
+    return command;
+  };
+
+  var preprocess = function(request) {
+    return request;
   };
 
   this.getCommands = function() {

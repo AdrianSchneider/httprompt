@@ -6,9 +6,6 @@ module.exports = function() {
   return [
     new Command(
       'help: prints out this help message',
-      function(request) {
-        return request.getLine() === 'help';
-      },
       function(request, done) {
         return this.dispatcher.getCommands()
           .filter(function(provider) {

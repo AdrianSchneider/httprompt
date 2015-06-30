@@ -1,76 +1,38 @@
 'use strict';
 
+var Command = require('./command');
+
 /**
  * Config commands
  *
  * @param {Object} config
  */
-module.exports = function ConfigCommands(config) {
-  var keywords = ['config set', 'config get', 'config list'];
-
-  /**
-   * Check if this should handle the line
-   *
-   * @param {String} line - an input line from the repl
-   * @return {Boolean}
-   */
-  this.match = function(line) {
-    return keywords.filter(function(keyword) {
-      return line.indexOf(keyword) === 0;
-    }).length >= 1;
-  };
-
-  /**
-   * Processes the line after matching
-   *
-   * @param {String} line - an input line from the repl
-   * @param {Functoin} done - called when complete
-   *
-   */
-  this.process = function(line, done) {
-    var items = line.toLowerCase().split(' ');
-
-    if (items[1] === 'list') return done(null, config);
-    if (items[1] === 'get') return handleGet(items[2], done);
-    if (items[1] === 'set') return handleSet(items[2], items[3], done);
-    done();
-  };
-
-  /**
-   * Returns the help for this module
-   *
-   * @return {Array}
-   */
-  this.getHelp = function() {
+module.exports = function(config) {
+  var main = function() {
     return [
-      'config set <key> <value>: changes a config option',
-      'config get <key>: gets a single config value',
-      'config list: lists all config options and values'
+      new Command('config list',              getList),
+      new Command('config get <key>',         getConfig),
+      new Command('config set <key> <value>', setConfig)
     ];
   };
 
-  /**
-   * Handles get command
-   *
-   * @param {String} key - requested config key
-   * @param {Function} done
-   */
-  var handleGet = function(key, done) {
-    if (typeof config[key] === 'undefined') {
-      return done(new Error('Config key "' + key + '" does not exist'));
-    }
-    return done(null, config[key]);
+  var getList = function(request, done) {
+    done(null, config.serialize());
   };
 
-  /**
-   * Handles set command
-   *
-   * @param {String} key - requested config key
-   * @param {String} value - new config value
-   * @param {Function} done
-   */
-  var handleSet = function(key, value, done) {
-    if (typeof config[key] === 'undefined') {
+  var getConfig = function(request, done) {
+    var key = request.get('key');
+    if (!config.has(key)) {
+      return done(new Error('Config key "' + key + '" does not exist'));
+    }
+    return done(null, config.get(key));
+  };
+
+  var setConfig = function(request, done) {
+    var key = request.get('key');
+    var value = request.get('value');
+
+    if (!config.has(key)) {
       return done(new Error('Config key "' + key + '" does not exist'));
     }
 
@@ -78,7 +40,10 @@ module.exports = function ConfigCommands(config) {
     if (value === 'false') value = false;
     if (/([0-9]+)/.test(value)) value = parseInt(value, 10);
 
-    config[key] = value;
+    config.set(key, value);
     return done(null, 'ok');
   };
+
+  return main();
+
 };

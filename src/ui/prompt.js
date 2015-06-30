@@ -1,5 +1,7 @@
 'use strict';
 
+var Request = require('../app/request');
+
 /**
  * Wraps a readline prompt with some application-centric events and methods
  *
@@ -33,7 +35,7 @@ module.exports = function Prompt(readline, dispatcher, renderer, options) {
     rl.pause();
     if (line === '') return afterResponse();
 
-    dispatcher.dispatch(line, function(err, matched, result) {
+    dispatcher.dispatch(new Request(line), function(err, matched, result) {
       if (err) return renderer.render('console', err, afterResponse);
       if (!matched) return renderer.render('console', new Error('Unknown command; type "help" for some ideas'), afterResponse);
       renderer.render('console', result, afterResponse);
