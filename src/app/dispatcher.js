@@ -2,7 +2,7 @@
 
 var _        = require('underscore');
 var async    = require('async');
-var expander = require('./utils/expander');
+var expander = require('../utils/expander');
 
 /**
  * Takes a user request and converts it into a response

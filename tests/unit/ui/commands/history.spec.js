@@ -2,7 +2,7 @@
 
 var expect          = require('chai').expect;
 var nodemock        = require('nodemock');
-var HistoryCommands = require('../../../../src/ui/commands/history');
+//var HistoryCommands = require('../../../../src/ui/commands/history');
 
 describe.skip('History Commands', function() {
 

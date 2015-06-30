@@ -5,6 +5,7 @@ var util         = require('util');
 var EventEmitter = require('events').EventEmitter;
 var nodemock     = require('nodemock');
 var Prompt       = require('../../../src/ui/prompt');
+var Request      = require('../../../src/app/request');
 
 describe('Prompt', function() {
 
@@ -27,9 +28,14 @@ describe('Prompt', function() {
   });
 
   it('Prints an error when no commands match', function(done) {
+    var request = new Request('made up');
+
     this.dispatcher
       .mock('dispatch')
-      .takes('made up', function(){})
+      .takesF(function(request, f) {
+        expect(request.getLine()).to.equal('made up');
+        return true;
+      })
       .calls(1, [null, false]);
 
     this.renderer
@@ -48,7 +54,10 @@ describe('Prompt', function() {
   it('Runs first matched provider and resumes after rendering', function(done) {
     this.dispatcher
       .mock('dispatch')
-      .takes('a', function(){})
+      .takesF(function(request, f) {
+        expect(request.getLine()).to.equal('a');
+        return true;
+      })
       .calls(1, [null, true, 'processed a']);
 
     this.renderer
