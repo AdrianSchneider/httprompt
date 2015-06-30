@@ -11,25 +11,25 @@ var Command = require('./command');
 module.exports = function HttpHeaderCommands(session) {
   var main = function() {
     return [
-      new Command('header set <name> <value>',   Command.startsWith('header set'),   process('set')),
-      new Command('header stick <name> <value>', Command.startsWith('header stick'), process('stick')),
-      new Command('header unset <name>',         Command.startsWith('header unset'), process('unset'))
+      new Command('header set <name> <value>',   setHeader),
+      new Command('header stick <name> <value>', stickHeader),
+      new Command('header unset <name>',         unsetHeader)
     ];
   };
 
-  var process = function(command) {
-    return function(request, done) {
-      var items = request.getLine().split(' ');
-      var action = items[1];
-      var header = items[2];
-      var value  = items[3];
+  var setHeader = function(request, done) {
+    session.setNextHeader(request.get('name'), request.get('value'));
+    done();
+  };
 
-      if (action === 'set')   session.setNextHeader(header, value);
-      if (action === 'stick') session.setHeader(header, value);
-      if (action === 'unset') session.unsetHeader(header, value);
+  var stickHeader = function(request, done) {
+    session.setHeader(request.get('name'), request.get('value'));
+    done();
+  };
 
-      done();
-    };
+  var unsetHeader = function(request, done) {
+    session.unsetHeader(request.get('name'));
+    done();
   };
 
   return main();
