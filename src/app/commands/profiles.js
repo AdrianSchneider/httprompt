@@ -7,11 +7,11 @@ var Command = require('./command');
  *
  * @param {Object} config
  */
-module.exports = function ConfigCommands(config, client) {
+module.exports = function(config, client) {
   var main = function() {
     return [
-      new Command('profiles list',          Command.equals('profiles list'), listProfiles), 
-      new Command('profiles switch <name>', Command.startsWith('profiles switch'), switchProfile)
+      new Command('profiles list',          listProfiles), 
+      new Command('profiles switch <name>', switchProfile)
     ];
   };
 
