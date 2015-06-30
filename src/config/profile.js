@@ -74,7 +74,8 @@ function ConfigProfile(baseUrl, actions) {
    * Gets custom commands from this profile
    * Each command just runs all lines against the dispatcher
    *
-   * @return {Array}
+   * @param {Dispatcher} dispatcher
+   * @return {Array<Command>}
    */
   this.getCommands = function(dispatcher) {
     return Object.keys(actions).map(function(actionString) {

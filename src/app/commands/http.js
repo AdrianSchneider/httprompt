@@ -22,7 +22,7 @@ module.exports = function HttpCommands(client) {
 
   var match = function(method) {
     return function(response) {
-      return (new RegExp('^' + method + '$', 'i')).test(response.getLine());
+      return (new RegExp('^' + method, 'i')).test(response.getLine());
     };
   };
 

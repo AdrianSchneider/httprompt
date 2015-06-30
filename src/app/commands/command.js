@@ -42,12 +42,15 @@ function Command(help, matcher, processor) {
 Command.prototype.matchFrom = function(text) {
   var command = this;
   return function(request) {
+    var input = request.getLine();
     var pattern = new RegExp('^' + text.replace(/<([-a-z0-9]*)>/gi, function() { return '([^ ]+)'; }) + '$');
     var result = pattern.test(text);
     if (!result) return false;
 
+    if (!pattern.test(input)) return false;
+
     if (/<([-a-z0-9]*)>/gi.test(text)) {
-      var keys = text.match(/<([-a-z0-9]*)>/gi).map(function(str) { return str.replace('<', '').replace('>', ''); });    
+      var keys = text.match(/<([-a-z0-9]*)>/gi).map(function(str) { return str.replace('<', '').replace('>', ''); });
       var values = request.getLine().match(pattern).slice(1);
 
       for (var i = 0; i < keys.length; i++) {

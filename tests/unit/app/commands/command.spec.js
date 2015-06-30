@@ -15,6 +15,13 @@ describe('Base Command', function() {
       expect(result).to.equal(true);
     });
 
+    it('Doesnt match wrong strings', function() {
+      var request = new Request('gobblty goop');
+      var command = new Command('static route', function(request, done) { done(); });
+      var result = command.match(request);
+      expect(result).to.equal(false);
+    });
+
     it('Parses input', function() {
       var request = new Request('set a b');
       var command = new Command('set <key> <value>', function(request, done) { done(); });

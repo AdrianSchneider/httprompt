@@ -8,7 +8,6 @@ var httpHeaderCommands = require('./app/commands/httpHeaders');
 var historyCommands    = require('./app/commands/history');
 var configCommands     = require('./app/commands/config');
 var profileCommands    = require('./app/commands/profiles');
-var customCommands     = require('./app/commands/actions');
 var Renderer           = require('./ui/renderer');
 var Prompt             = require('./ui/prompt');
 var HttpClient         = require('./http/client');
@@ -46,10 +45,9 @@ module.exports = function(configFilename, stdin, stdout, profileName, done) {
       profileCommands(config, client),
       httpCommands(client),
       httpHeaderCommands(session),
-      customCommands(session)
     ].reduce(function(out, items) { return out.concat(items); }, []);
 
-    var dispatcher = new Dispatcher(session, [commands]);
+    var dispatcher = new Dispatcher(session, commands);
 
     var renderer = new Renderer(config, {
       console: require('./ui/renderers/console'),

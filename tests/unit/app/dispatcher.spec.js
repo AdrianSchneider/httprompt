@@ -8,7 +8,11 @@ var Request    = require('../../../src/app/request');
 describe('Dispatcher', function() {
 
   beforeEach(function() {
-    this.user = nodemock.mock();
+    this.session = nodemock.mock();
+    this.profile = nodemock.mock();
+    this.profile.mock('getCommands').takesF(function() { return true; }).returns([]); 
+    this.session.on = function(){};
+    this.session.getProfile = function() { return this.profile; }.bind(this);
     this.commands = [{
       match: function(line) { return line.getLine() === 'a'; },
       process: function(line, done) { done(null, { name: 'sup' }); },
@@ -18,11 +22,11 @@ describe('Dispatcher', function() {
       process: function(line, done) { done(new Error('failed')); },
       setDispatcher: function() {}
     }];
-    this.dispatcher = new Dispatcher(this.user, this.commands);
+    this.dispatcher = new Dispatcher(this.session, this.commands);
   });
 
   afterEach(function() {
-    this.user.assertThrows();
+    this.session.assertThrows();
   });
 
   it('Calls with true,result when matching succesfully', function(done) {

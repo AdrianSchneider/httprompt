@@ -13,11 +13,7 @@ var expander = require('../utils/expander');
  */
 module.exports = function Dispatcher(session, baseCommands) {
   var dispatcher = this;
-  var commands = [].concat(baseCommands);
-
-  commands.forEach(function(command) {
-    command.setDispatcher(this);
-  }.bind(this));
+  var commands = [];
 
   /**
    * Dispatches commands in the form of free text lines, and
@@ -38,6 +34,12 @@ module.exports = function Dispatcher(session, baseCommands) {
     });
   };
 
+  /**
+   * Finds the first command that matches the request
+   *
+   * @param {Request} request
+   * @return {Command}
+   */
   var getMatchingCommand = function(request) {
     var command = _.first(commands.filter(function(command) { return command.match(request); }));
     if (request) request.setCommand(command);
@@ -48,8 +50,7 @@ module.exports = function Dispatcher(session, baseCommands) {
    * Refreshes the commands based on the session
    */
   var refreshCommands = function() {
-    commands = [].concat(baseCommands);
-
+    commands = [].concat(baseCommands).concat(session.getProfile().getCommands(dispatcher));
     commands.forEach(function(command) {
       command.setDispatcher(dispatcher);
     });
@@ -74,5 +75,8 @@ module.exports = function Dispatcher(session, baseCommands) {
   this.getCommands = function() {
     return commands;
   };
+
+  session.on('profiles.switch', refreshCommands);
+  refreshCommands();
 
 };
