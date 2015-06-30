@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 
-var program = require('commander');
-var path    = require('path');
-var app     = require('../src/app');
+var program   = require('commander');
+var path      = require('path');
+var bootstrap = require('../src/bootstrap');
 
 program
   .version('0.0.1')
@@ -11,7 +11,7 @@ program
   .parse(process.argv);
 
 var configFilename = path.resolve(process.env.HOME, './.httprompt.json');
-app(configFilename, process.stdin, process.stdout, program.profile || '', function(err, prompt) {
+bootstrap(configFilename, process.stdin, process.stdout, program.profile || '', function(err, prompt) {
   if (err) {
     console.error(err);
     process.exit(1);

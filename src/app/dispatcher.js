@@ -1,13 +1,20 @@
 'use strict';
 
-module.exports = function Dispatcher(user, commands) {
+var expander = require('./utils/expander');
+
+/**
+ * Takes a user request and converts it into a response
+ * using the many command providers
+ *
+ * @param {Session} session
+ * @param {Array}   commands
+ */
+module.exports = function Dispatcher(session, commands) {
   var dispatcher = this;
 
-  commands.filter(function(command) {
-    return command.setDispatcher;
-  }).forEach(function(command) {
-    command.setDispatcher(dispatcher);
-  });
+  commands.forEach(function(command) {
+    command.setDispatcher(this);
+  }.bind(this));
 
   /**
    * Dispatches commands in the form of free text lines, and
@@ -17,14 +24,19 @@ module.exports = function Dispatcher(user, commands) {
    * @param {Function} done - err,matched,result
    */
   this.dispatch = function(line, done) {
+    line = preprocessLine(line);
     var matched = commands.filter(function(provider) { return provider.match(line); })[0];
     if (!matched) return done(null, false);
     return matched.process(line, function(err, result) {
       if (err) return done(err);
 
-      //user.emit('entry', line, result);
+      //session.emit('entry', line, result);
       return done(null, true, result);
     });
+  };
+
+  var preprocessLine = function(line) {
+    return line;
   };
 
   this.getCommands = function() {

@@ -17,6 +17,10 @@ module.exports = function SessionNamespace(profile) {
   var nextHeaders = [];
   var history = new History();
 
+  this.getHistory = function() {
+    return history;
+  };
+
   this.getProfile = function() {
     return profile;
   };

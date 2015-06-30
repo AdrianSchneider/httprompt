@@ -1,5 +1,6 @@
 'use strict';
 
+var _     = require('underscore');
 var Entry = require('./entry');
 
 /**
@@ -16,5 +17,18 @@ module.exports = function History() {
       throw new TypeError('History.log requires an Entry');
     }
     entries.push(entry);
+  };
+
+  /**
+   * Gets the last response
+   *
+   * @return
+   */
+  this.getLastResponse = function() {
+    if (!entries.length) {
+      throw new Error('History is empty');
+    }
+
+    return _.last(entries);
   };
 };

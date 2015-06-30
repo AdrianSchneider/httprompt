@@ -10,7 +10,7 @@ var async = require('async');
  * @param {ConfigProfiles] profiles
  * @param {PromptDispatcher} dispatcher
  */
-module.exports = function CustomActionCommands(user) {
+module.exports = function CustomActionCommands(session) {
   var matchers = [];
   var processors = [];
   var dispatcher;
@@ -50,7 +50,6 @@ module.exports = function CustomActionCommands(user) {
       });
     }, function(err) {
       if (err) return done(err);
-      console.error('w00t');
       return done();
     });
   };
@@ -70,7 +69,7 @@ module.exports = function CustomActionCommands(user) {
     });
   };
 
-  changeProfile(user.getProfile());
-  user.on('switch', changeProfile);
+  changeProfile(session.getProfile());
+  session.on('profiles.switch', changeProfile);
 
 };

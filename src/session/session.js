@@ -33,6 +33,45 @@ function Session(profiles, profileName) {
     this.emit('profiles.switch', profile);
   };
 
+
+  /**
+   * Generates a URL, combining the base URL with the additional path
+   *
+   * @param {String} path
+   * @return {String}
+   */
+  this.buildUrl = function(path) {
+    return profile.buildUrl(path);
+  };
+
+  /**
+   * Generates the options to use for the request
+   *
+   * @param {Object} query
+   * @param {Object} data
+   * @param {Object} headers
+   * @return {Object}
+   */
+  this.buildOptions = function(query, data, headers) {
+    return profile.buildOptions(query, data, headers);
+  };
+
+  this.setHeader = function(header, value) {
+    return profile.getSession().setHeader(header, value);
+  };
+
+  this.setNextHeader = function(header, value) {
+    return profile.getSession().setNextHeader(header, value);
+  };
+
+  this.unsetHeader = function(header) {
+    return profile.getSession().unsetHeader(header);
+  };
+
+  this.getLastResponse = function() {
+    return profile.getSession().getHistory().getLastResponse();
+  };
+
   if (profileName) this.switchProfile(profileName);
 }
 
