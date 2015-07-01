@@ -20,6 +20,10 @@ function Command(help, matcher, processor) {
     this.dispatcher = dispatcher;
   };
 
+  this.getDispatcher = function() {
+    return this.dispatcher;
+  };
+
   this.getHelp = function() {
     return help;
   };
