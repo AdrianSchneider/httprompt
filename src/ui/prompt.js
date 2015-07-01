@@ -13,6 +13,7 @@ var Request = require('../app/request');
  * @param {Stream}     options.output - The input stream for the repl
  */
 module.exports = function Prompt(readline, dispatcher, renderer, options) {
+  var name = 'httprompt> ';
   var rl = readline.createInterface(options);
   rl.history = ['test'];
   rl.historyIndex = 0;
@@ -21,9 +22,15 @@ module.exports = function Prompt(readline, dispatcher, renderer, options) {
    * Starts the prompt
    */
   this.start = function() {
-    rl.setPrompt('httprompt> ');
+    rl.setPrompt(name);
     rl.prompt();
     return rl;
+  };
+
+  this.rename = function(newName) {
+    if (newName === 'default') return;
+    name = newName + '> ';
+    rl.setPrompt(name);
   };
 
   /**

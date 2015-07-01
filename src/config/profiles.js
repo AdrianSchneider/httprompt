@@ -9,8 +9,8 @@ var ConfigProfile = require('./profile');
  * @param {Object} rawProflies
  */
 module.exports = function ConfigProfiles(rawProfiles) {
-  var profiles = _.mapObject(rawProfiles, function(rawProfile) {
-    return ConfigProfile.fromConfig(rawProfile);
+  var profiles = _.mapObject(rawProfiles, function(rawProfile, key) {
+    return ConfigProfile.fromConfig(key, rawProfile);
   });
 
   /**

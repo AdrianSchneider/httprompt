@@ -11,13 +11,17 @@ var Namespace = require('../session/namespace');
  *
  * @param {String} baseUrl
  */
-function ConfigProfile(baseUrl, actions, vars, startupTasks) {
+function ConfigProfile(name, baseUrl, actions, vars, startupTasks) {
   if (!vars) vars = {};
   if (!actions) actions = {};
   if (!startupTasks) startupTasks = [];
 
   var session;
   var active = false;
+
+  this.getName = function() {
+    return name;
+  };
 
   /**
    * Called whenever switching to this profile
@@ -135,8 +139,9 @@ function ConfigProfile(baseUrl, actions, vars, startupTasks) {
  * @param {Object} config
  * @return {ConfigProfile}
  */
-ConfigProfile.fromConfig = function(config) {
+ConfigProfile.fromConfig = function(name, config) {
   return new ConfigProfile(
+    name,
     config.baseUrl,
     config.actions || {},
     config.vars    || {},

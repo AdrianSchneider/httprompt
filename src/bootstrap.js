@@ -65,6 +65,14 @@ module.exports = function(configFilename, stdin, stdout, profileName, done) {
       { input: stdin, output: stdout }
     );
 
+    if (profileName !== 'default') {
+      prompt.rename(session.getProfile().getName());
+    }
+
+    session.on('profiles.switch', function(profile) {
+      prompt.rename(profile.getName());
+    });
+
     async.eachSeries(session.getProfile().getStartupTasks(), function(line, next) {
       dispatcher.dispatch(new Request(line), next);
     }, function(err) {
