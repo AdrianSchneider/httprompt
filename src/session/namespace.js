@@ -1,8 +1,10 @@
 'use strict';
 
 var _             = require('underscore');
+var request       = require('request');
 var History       = require('./history');
 var ConfigProfile = require('../config/profile');
+var Entry         = require('./entry');
 
 /**
  * Represents a user session with the prompt
@@ -16,6 +18,8 @@ module.exports = function SessionNamespace(profile) {
   var headers = [];
   var nextHeaders = [];
   var history = new History();
+
+  var jar = request.jar();
 
   this.getHistory = function() {
     return history;
@@ -43,7 +47,12 @@ module.exports = function SessionNamespace(profile) {
   };
 
   this.buildOptions = function(query, data, headers) {
-    return profile.buildOptions(query, data, headers);
+    var opts = _.extend(
+      { jar: jar },
+      profile.buildOptions(query, data, headers)
+    );
+
+    return opts;
   };
 
 
@@ -57,6 +66,10 @@ module.exports = function SessionNamespace(profile) {
     var merged =  _.extend({}, specficHeaders, headers, nextHeaders);
     nextHeaders = {};
     return merged;
+  };
+
+  this.log = function(request, response) {
+    history.log(new Entry(request, response));
   };
 
 };

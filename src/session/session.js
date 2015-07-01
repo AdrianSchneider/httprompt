@@ -33,6 +33,10 @@ function Session(profiles, profileName) {
     this.emit('profiles.switch', profile);
   };
 
+  this.log = function(request, response) {
+    this.emit('entry', request, response);
+  };
+
 
   /**
    * Generates a URL, combining the base URL with the additional path
@@ -53,7 +57,7 @@ function Session(profiles, profileName) {
    * @return {Object}
    */
   this.buildOptions = function(query, data, headers) {
-    return profile.buildOptions(query, data, headers);
+    return profile.getSession().buildOptions(query, data, headers);
   };
 
   this.setHeader = function(header, value) {

@@ -24,9 +24,9 @@ function ConfigProfile(baseUrl, actions) {
     active = true;
     if (!session) {
       session = new Namespace(this);
-      userSession.on('entry', function(line, response) {
+      userSession.on('entry', function(request, response) {
         if (active) {
-          session.log(line, response);
+          session.log(request, response);
         }
       });
     }

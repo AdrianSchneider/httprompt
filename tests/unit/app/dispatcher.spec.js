@@ -9,6 +9,7 @@ describe('Dispatcher', function() {
 
   beforeEach(function() {
     this.session = nodemock.mock();
+    this.session.log = function() {};
     this.profile = nodemock.mock();
     this.profile.mock('getCommands').takesF(function() { return true; }).returns([]); 
     this.session.on = function(){};

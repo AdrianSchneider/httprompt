@@ -10,7 +10,7 @@ var HttpResponse  = require('./response');
  * @param {Object} request library
  */
 module.exports = function HttpClient(user, options, request) {
-  if(!options) options = {};
+  if(!options) options = { json: true };
   if(!request) request = require('request');
 
   /**

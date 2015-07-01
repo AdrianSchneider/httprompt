@@ -1,8 +1,8 @@
 'use strict';
 
-var _        = require('underscore');
-var async    = require('async');
-var expander = require('../utils/expander');
+var _           = require('underscore');
+var async       = require('async');
+var transformer = require('./request.transformer');
 
 /**
  * Takes a user request and converts it into a response
@@ -11,7 +11,7 @@ var expander = require('../utils/expander');
  * @param {Session} session
  * @param {Array}   baseCommands
  */
-module.exports = function Dispatcher(session, baseCommands) {
+module.exports = function Dispatcher(session, baseCommands, config) {
   var dispatcher = this;
   var commands = [];
 
@@ -23,14 +23,15 @@ module.exports = function Dispatcher(session, baseCommands) {
    * @param {Function} done - err,matched,result
    */
   this.dispatch = function(request, done) {
-    preprocess(request);
+    request = preprocess(request);
 
     var command = getMatchingCommand(request);
     if (!command) return done(null, false);
 
-    return command.process(request, function(err, result) {
+    return command.process(request, function(err, response) {
       if (err) return done(err);
-      return done(null, true, result);
+      session.log(request, response);
+      return done(null, true, response);
     });
   };
 
@@ -56,8 +57,8 @@ module.exports = function Dispatcher(session, baseCommands) {
     });
   };
 
-  var preprocess = function(request) {
-    return request;
+  var preprocess = function(request, parentRequest) {
+    return transformer(request, parentRequest, config, session);
   };
 
   /**

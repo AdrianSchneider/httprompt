@@ -47,7 +47,7 @@ module.exports = function(configFilename, stdin, stdout, profileName, done) {
       httpHeaderCommands(session),
     ].reduce(function(out, items) { return out.concat(items); }, []);
 
-    var dispatcher = new Dispatcher(session, commands);
+    var dispatcher = new Dispatcher(session, commands, config);
 
     var renderer = new Renderer(config, {
       console: require('./ui/renderers/console'),

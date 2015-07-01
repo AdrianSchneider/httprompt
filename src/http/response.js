@@ -4,7 +4,7 @@ var http = require('http');
 
 module.exports = function HttpResponse(res, body) {
   this.getResponseCode = function() {
-    return res.responseCode;
+    return res.statusCode;
   };
 
   this.getHeaders = function() {
