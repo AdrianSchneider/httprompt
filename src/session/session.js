@@ -1,8 +1,9 @@
 'use strict';
 
-var util         = require('util');
-var EventEmitter = require('events').EventEmitter;
+var util          = require('util');
+var EventEmitter  = require('events').EventEmitter;
 var ConfigProfile = require('../config/profile');
+var HttpResponse  = require('../http/response');
 
 /**
  * Represents the user's session with the prompt
@@ -33,8 +34,16 @@ function Session(profiles, profileName) {
     this.emit('profiles.switch', profile);
   };
 
+  /**
+   * Only log http responses to history
+   *
+   * @param {Request} request
+   * @param {Response} response
+   */
   this.log = function(request, response) {
-    this.emit('entry', request, response);
+    if (response instanceof HttpResponse) {
+      this.emit('entry', request, response);
+    }
   };
 
 
