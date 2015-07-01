@@ -41,8 +41,9 @@ module.exports = function(configFilename, stdin, stdout, profileName, done) {
     }
 
     var renderer = new Renderer(config, {
-      console: require('./ui/renderers/console'),
-      jsonfui: require('./ui/renderers/jsonfui')
+      console : require('./ui/renderers/console'),
+      jsonfui : require('./ui/renderers/jsonfui'),
+      less    : require('./ui/renderers/less')
     });
 
     var client = new HttpClient(session);

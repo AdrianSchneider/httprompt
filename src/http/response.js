@@ -16,7 +16,7 @@ module.exports = function HttpResponse(res, body) {
   };
 
   this.serialize = function() {
-    return dumpRequest(res) + '\n' + dumpResponse(res) + '\n' + JSON.stringify(body, null, 2) + '\n\n';
+    return dumpRequest(res) + '\n' + dumpResponse(res) + '\n' + dumpBody(body) + '\n\n';
   };
 
 };
@@ -47,4 +47,9 @@ function dumpResponse(res) {
   });
 
   return out;
+}
+
+function dumpBody(body) {
+  if (typeof body === 'string') return body;
+  return JSON.stringify(body, null, 2);
 }
