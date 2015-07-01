@@ -4,5 +4,18 @@
   "renderer": "console",
   "external": "less",
   "external.json": "jsonfui",
-  "history.length": 100
+  "history.length": 100,
+  "profiles": {
+    "default": {
+      "baseUrl": "",
+      "vars": {
+        "key": "value"
+      },
+      "actions": {
+        "login <username> <password>": [
+          "POST /login { \"username\": \"$(input.username)\", \"password\": \"$(input.password)\""
+        ]
+      }
+    }
+  }
 }

@@ -11,7 +11,7 @@ program
   .parse(process.argv);
 
 var configFilename = path.resolve(process.env.HOME, './.httprompt.json');
-bootstrap(configFilename, process.stdin, process.stdout, program.profile || '', function(err, prompt) {
+bootstrap(configFilename, process.stdin, process.stdout, program.profile || 'default', function(err, prompt) {
   if (err) {
     console.error(err);
     process.exit(1);
