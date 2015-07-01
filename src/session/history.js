@@ -25,10 +25,6 @@ module.exports = function History() {
    * @return
    */
   this.getLastResponse = function() {
-    if (!entries.length) {
-      throw new Error('History is empty');
-    }
-
     return _.last(entries);
   };
 };

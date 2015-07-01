@@ -9,7 +9,7 @@ module.exports = function(session, renderer) {
   return [
     new Command('open', function(request, done) {
       var entry = session.getLastResponse();
-      if (!entry) return done(null, 'No response to show');
+      if (!entry) return done(null, new Error('No items in history'));
       renderer.renderExternal(entry.getResponse(), done);
     }),
     new Command(
