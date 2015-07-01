@@ -16,7 +16,7 @@ module.exports = function HttpResponse(res, body) {
   };
 
   this.serialize = function() {
-    return dumpRequest(res) + '\n' + dumpResponse(res) + '\n' + JSON.stringify(body, null, 2);
+    return dumpRequest(res) + '\n' + dumpResponse(res) + '\n' + JSON.stringify(body, null, 2) + '\n\n';
   };
 
 };

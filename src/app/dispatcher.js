@@ -22,8 +22,10 @@ module.exports = function Dispatcher(session, baseCommands, config) {
    * @param {Request} request
    * @param {Function} done - err,matched,result
    */
-  this.dispatch = function(request, done) {
-    request = preprocess(request);
+  this.dispatch = function(request, parentRequest, done) {
+    if (!done) done = parentRequest;
+
+    request = preprocess(request, parentRequest);
 
     var command = getMatchingCommand(request);
     if (!command) return done(null, false);

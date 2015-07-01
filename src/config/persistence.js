@@ -25,7 +25,6 @@ module.exports = function ConfigPersistence(filename) {
   var ensureExists = function(done) {
     fs.exists(filename, function(exists) {
       if (exists) return done();
-      console.error(filename);
       fs.writeFile(filename, JSON.stringify(defaults, null, 2), function(err) {
         done(err);
       });

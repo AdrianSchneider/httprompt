@@ -15,9 +15,10 @@ module.exports = function(request, parentRequest, config, session) {
     var type = parts[0];
     var name = parts.slice(1).join('.');
 
-    if (type === 'input') return parentRequest.get(name);
+    if (type === 'input')    return parentRequest.get(name);
     if (type === 'response') return getResponse(name);
-    if (type === 'config') return getConfig(name);
+    if (type === 'config')   return getConfig(name);
+    if (type === 'vars')     return getVar(name);
 
     throw new Error('todo');
   };
@@ -39,10 +40,13 @@ module.exports = function(request, parentRequest, config, session) {
     return obj;
   };
 
-  var getConfig = function() {
-
+  var getConfig = function(name) {
+    return config.get(name);
   };
 
+  var getVar = function(name) {
+    return session.getProfile().getVariable(name);
+  };
 
   return main();
 };

@@ -11,8 +11,10 @@ var Namespace = require('../session/namespace');
  *
  * @param {String} baseUrl
  */
-function ConfigProfile(baseUrl, actions) {
+function ConfigProfile(baseUrl, actions, vars) {
+  if (!vars) vars = {};
   if (!actions) actions = {};
+
   var session;
   var active = false;
 
@@ -83,7 +85,7 @@ function ConfigProfile(baseUrl, actions) {
         actionString,
         function(request, done) {
           async.eachSeries(actions[actionString], function(line, next) {
-            dispatcher.dispatch(new Request(line), function(err, result, response) {
+            dispatcher.dispatch(new Request(line), request, function(err, result, response) {
               if (err) return next(err);
               if (!result) return next(new Error('"' + line + ' does not match any commands'));
               return next();
@@ -97,6 +99,9 @@ function ConfigProfile(baseUrl, actions) {
     });
   };
 
+  this.getVariable = function(key) {
+    return vars[key];
+  };
 }
 
 /**
@@ -106,7 +111,11 @@ function ConfigProfile(baseUrl, actions) {
  * @return {ConfigProfile}
  */
 ConfigProfile.fromConfig = function(config) {
-  return new ConfigProfile(config.baseUrl, config.actions || {});
+  return new ConfigProfile(
+    config.baseUrl,
+    config.actions || {},
+    config.vars || {}
+  );
 };
 
 module.exports = ConfigProfile;
