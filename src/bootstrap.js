@@ -3,6 +3,7 @@
 var request            = require('request');
 var readline           = require('readline');
 var Dispatcher         = require('./app/dispatcher');
+var helpCommands       = require('./app/commands/help');
 var httpCommands       = require('./app/commands/http');
 var httpHeaderCommands = require('./app/commands/httpHeaders');
 var historyCommands    = require('./app/commands/history');
@@ -45,6 +46,7 @@ module.exports = function(configFilename, stdin, stdout, profileName, done) {
     var client = new HttpClient(session);
 
     var commands = [
+      helpCommands(),
       configCommands(config),
       historyCommands(session, renderer),
       profileCommands(config, client),

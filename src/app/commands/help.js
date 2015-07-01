@@ -5,9 +5,9 @@ var Command = require('./command');
 module.exports = function() {
   return [
     new Command(
-      'help: prints out this help message',
+      'help',
       function(request, done) {
-        return this.dispatcher.getCommands()
+        done(null, this.dispatcher.getCommands()
           .filter(function(provider) {
             return provider.getHelp;
           })
@@ -23,7 +23,8 @@ module.exports = function() {
           .reduce(function(out, groups) {
             out = out.concat(groups);
             return out;
-          }, []);
+          }, [])
+        );
       }
     )
   ];
