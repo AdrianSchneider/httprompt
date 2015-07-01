@@ -37,22 +37,22 @@ module.exports = function(configFilename, stdin, stdout, profileName, done) {
       return done(e);
     }
 
+    var renderer = new Renderer(config, {
+      console: require('./ui/renderers/console'),
+      jsonfui: require('./ui/renderers/jsonfui')
+    });
+
     var client = new HttpClient(session);
 
     var commands = [
       configCommands(config),
-      historyCommands(client, renderer),
+      historyCommands(session, renderer),
       profileCommands(config, client),
       httpCommands(client),
       httpHeaderCommands(session),
     ].reduce(function(out, items) { return out.concat(items); }, []);
 
     var dispatcher = new Dispatcher(session, commands, config);
-
-    var renderer = new Renderer(config, {
-      console: require('./ui/renderers/console'),
-      jsonfui: require('./ui/renderers/jsonfui')
-    });
 
     var prompt = new Prompt(
       readline,
