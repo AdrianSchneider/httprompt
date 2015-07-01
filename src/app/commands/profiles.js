@@ -7,7 +7,7 @@ var Command = require('./command');
  *
  * @param {Object} config
  */
-module.exports = function(config, client) {
+module.exports = function(config, session) {
   var main = function() {
     return [
       new Command('profiles list',          listProfiles), 
@@ -21,7 +21,7 @@ module.exports = function(config, client) {
 
   var switchProfile = function(request, done) {
     try {
-      config.getProfiles().switchTo(request.get('name'));
+      session.switchProfile(request.get('name'));
       done();
     } catch (e) {
       return done(e);

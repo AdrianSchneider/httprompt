@@ -49,7 +49,7 @@ module.exports = function(configFilename, stdin, stdout, profileName, done) {
       helpCommands(),
       configCommands(config),
       historyCommands(session, renderer),
-      profileCommands(config, client),
+      profileCommands(config, session),
       httpCommands(client),
       httpHeaderCommands(session),
     ].reduce(function(out, items) { return out.concat(items); }, []);
