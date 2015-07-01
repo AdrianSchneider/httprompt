@@ -11,9 +11,10 @@ var Namespace = require('../session/namespace');
  *
  * @param {String} baseUrl
  */
-function ConfigProfile(baseUrl, actions, vars) {
+function ConfigProfile(baseUrl, actions, vars, startupTasks) {
   if (!vars) vars = {};
   if (!actions) actions = {};
+  if (!startupTasks) startupTasks = [];
 
   var session;
   var active = false;
@@ -21,6 +22,8 @@ function ConfigProfile(baseUrl, actions, vars) {
   /**
    * Called whenever switching to this profile
    * Ensures a session is ready
+   *
+   * @param {Session} userSession
    */
   this.activate = function(userSession) {
     active = true;
@@ -37,11 +40,18 @@ function ConfigProfile(baseUrl, actions, vars) {
   /**
    * Called when the profile is deactivated
    * Disables logging to session when profile is inactive
+   *
+   * @param {Session} userSession
    */
   this.deactivate = function(userSession) {
     active = false;
   };
 
+  /**
+   * Gets the active session namespace for this profile
+   *
+   * @return {SessionNamespace}
+   */
   this.getSession = function() {
     return session;
   };
@@ -99,8 +109,23 @@ function ConfigProfile(baseUrl, actions, vars) {
     });
   };
 
+  /**
+   * Gets an arbitrary profile config variable
+   *
+   * @param {String} key
+   * @return {*}
+   */
   this.getVariable = function(key) {
     return vars[key];
+  };
+
+  /**
+   * Gets the startup tasks
+   *
+   * @return {Array<String>}
+   */
+  this.getStartupTasks = function() {
+    return startupTasks;
   };
 }
 
@@ -114,7 +139,8 @@ ConfigProfile.fromConfig = function(config) {
   return new ConfigProfile(
     config.baseUrl,
     config.actions || {},
-    config.vars || {}
+    config.vars    || {},
+    config.startup || []
   );
 };
 

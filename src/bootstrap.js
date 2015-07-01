@@ -1,8 +1,10 @@
 'use strict';
 
+var async              = require('async');
 var request            = require('request');
 var readline           = require('readline');
 var Dispatcher         = require('./app/dispatcher');
+var Request            = require('./app/request');
 var helpCommands       = require('./app/commands/help');
 var httpCommands       = require('./app/commands/http');
 var httpHeaderCommands = require('./app/commands/httpHeaders');
@@ -63,6 +65,11 @@ module.exports = function(configFilename, stdin, stdout, profileName, done) {
       { input: stdin, output: stdout }
     );
 
-    return done(null, prompt);
+    async.eachSeries(session.getProfile().getStartupTasks(), function(line, next) {
+      dispatcher.dispatch(new Request(line), next);
+    }, function(err) {
+      if (err) return done(err);
+      return done(null, prompt);
+    });
   });
 };
