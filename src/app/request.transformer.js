@@ -20,7 +20,7 @@ module.exports = function(request, parentRequest, config, session) {
     if (type === 'config')   return getConfig(name);
     if (type === 'vars')     return getVar(name);
 
-    throw new Error('todo');
+    throw new Error('invalid variable namespace: ' + type);
   };
 
   var getResponse = function(dottedKey) {
