@@ -56,6 +56,7 @@ module.exports = function Request(line, params) {
    * @return {*}
    */
   this.get = function(key) {
+    if (typeof params[key] === 'undefined') throw new Error('"' + key + '" is not set');
     return params[key];
   };
 
