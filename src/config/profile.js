@@ -23,6 +23,10 @@ function ConfigProfile(name, baseUrl, actions, vars, startupTasks) {
     return name;
   };
 
+  this.isActive = function() {
+    return active;
+  };
+
   /**
    * Called whenever switching to this profile
    * Ensures a session is ready
