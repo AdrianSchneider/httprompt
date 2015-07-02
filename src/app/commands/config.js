@@ -17,7 +17,7 @@ module.exports = function(config) {
   };
 
   var getList = function(request, done) {
-    done(null, config.serialize());
+    done(null, config.getGlobals());
   };
 
   var getConfig = function(request, done) {

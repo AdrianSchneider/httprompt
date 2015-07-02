@@ -1,5 +1,6 @@
 'use strict';
 
+var _              = require('underscore');
 var ConfigProfiles = require('./profiles');
 
 /**
@@ -48,6 +49,10 @@ module.exports = function Config(data) {
    */
   this.serialize = function() {
     return JSON.stringify(data, null, 2);
+  };
+  
+  this.getGlobals = function() {
+    return _.omit(data, 'profiles');
   };
 
   /**

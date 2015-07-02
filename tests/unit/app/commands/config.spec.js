@@ -26,7 +26,7 @@ describe('Config Commands', function() {
     it('Lists all of the config values', function(done) {
       this.command = this.getCommand('config list');
       this.config
-        .mock('serialize')
+        .mock('getGlobals')
         .returns({ config: true });
 
       this.command.process(new Request(), function(err, output) {
