@@ -38,7 +38,9 @@ module.exports = function HttpCommands(client) {
       if (payload) {
         try {
           payload = JSON.parse(payload);
-        } catch (e) { }
+        } catch (e) { 
+          payload = null;
+        }
       }
 
       if (!payload) payload = null;
