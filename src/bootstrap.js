@@ -16,6 +16,7 @@ var Prompt             = require('./ui/prompt');
 var HttpClient         = require('./http/client');
 var Profile            = require('./config/profile');
 var ConfigPersistence  = require('./config/persistence');
+var defaultConfig      = require('./config/defaults.json');
 var Session            = require('./session/session');
 
 /**
@@ -29,7 +30,7 @@ var Session            = require('./session/session');
  * @param {Function} done
  */
 module.exports = function(configFilename, stdin, stdout, profileName, done) {
-  var loader = new ConfigPersistence(configFilename);
+  var loader = new ConfigPersistence(configFilename, defaultConfig);
   loader.load(function(err, config) {
     if (err) return done(err);
 

@@ -1,13 +1,14 @@
 'use strict';
 
 var _        = require('underscore');
-var fs       = require('fs');
 var path     = require('path');
 var async    = require('async');
 var Config   = require('./config');
 var defaults = require('./defaults.json');
 
-module.exports = function ConfigPersistence(filename) {
+module.exports = function ConfigPersistence(filename, defaults, fs) {
+  if (!fs) fs = require('fs');
+
   /**
    * Loads the user's config
    *
@@ -67,7 +68,7 @@ module.exports = function ConfigPersistence(filename) {
   this.save = function(config, done) {
     async.series([
       ensureExists,
-      async.apply(fs.writeFile, filename, config.serialize)
-    ]);
+      async.apply(fs.writeFile, filename, config.serialize())
+    ], done);
   };
 };
