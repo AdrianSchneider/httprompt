@@ -29,6 +29,7 @@ module.exports = function Config(data) {
    * @return {*} the config value
    */
   this.get = function(key) {
+    if (!this.has(key)) throw new Error('"' + key + '" is not a valid config option');
     return data[key];
   };
 
@@ -39,6 +40,7 @@ module.exports = function Config(data) {
    * @param {*} value
    */
   this.set = function(key, value) {
+    if (!this.has(key)) throw new Error('"' + key + '" is not a valid config option');
     data[key] = value;
   };
 
