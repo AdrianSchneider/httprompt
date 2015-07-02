@@ -28,7 +28,7 @@ module.exports = function Prompt(readline, dispatcher, renderer, options) {
   };
 
   this.rename = function(newName) {
-    if (newName === 'default') return;
+    if (newName === 'default') newName = 'httprompt';
     name = newName + '> ';
     rl.setPrompt(name);
   };
