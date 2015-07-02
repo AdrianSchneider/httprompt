@@ -3,7 +3,7 @@
   "show.body": true,
   "renderer": "console",
   "external": "less",
-  "external.json": "jsonfui",
+  "external.json": "less",
   "history.length": 100,
   "profiles": {
     "default": {
