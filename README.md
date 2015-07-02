@@ -1,5 +1,7 @@
 # HTTPrompt
 
+[![Build Status](https://travis-ci.org/AdrianSchneider/httprompt.svg?branch=master)](https://travis-ci.org/AdrianSchneider/httprompt)
+
 httprompt is an interactive command-line API client. In the spirit of HATEOS, it is stateful by default and encourages discoverability.
 
 Users are encouraged to create profiles for their servers to allow easy switching between servers or even sessions within those servers, as well as easy authentication into those services.
