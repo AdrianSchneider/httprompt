@@ -4,7 +4,9 @@
   "description": "A readline prompt for interacting with APIs.",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha tests --recursive -R dot"
+    "test": "./node_modules/.bin/mocha tests --recursive -R dot",
+    "coverage-html": "istanbul cover --include-all-sources ./node_modules/mocha/bin/_mocha tests -- --recursive -R spec",
+    "coveralls": "istanbul cover --include-all-sources ./node_modules/mocha/bin/_mocha tests --report lcovonly -- --recursive -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "keywords": [
     "api",
@@ -24,6 +26,8 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.0.0",
+    "coveralls": "^2.11.2",
+    "istanbul": "^0.3.17",
     "mocha": "^2.2.5",
     "nodemock": "^0.3.4"
   }
