@@ -8,5 +8,7 @@ before_install:
   - npm install -g npm
 before_script:
   - npm install 
+after_script:
+  - npm run coveralls
 notifications:
   email: false
