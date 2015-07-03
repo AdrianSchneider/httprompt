@@ -4,10 +4,10 @@ var _        = require('underscore');
 var path     = require('path');
 var async    = require('async');
 var Config   = require('./config');
-var defaults = require('./defaults.json');
 
 module.exports = function ConfigPersistence(filename, defaults, fs) {
   if (!fs) fs = require('fs');
+  if (!defaults) defaults = require('./defaults.json');
 
   /**
    * Loads the user's config

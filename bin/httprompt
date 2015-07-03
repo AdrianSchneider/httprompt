@@ -6,16 +6,30 @@ var path      = require('path');
 var bootstrap = require('../src/bootstrap');
 
 program
-  .version('0.0.1')
+  .version('0.0.2')
   .option('-p --profile [value]', 'Start with profile')
+  .option('-c --config [file]', 'Config filename')
   .parse(process.argv);
 
-var configFilename = path.resolve(process.env.HOME, './.httprompt.json');
-bootstrap(configFilename, process.stdin, process.stdout, program.profile || 'default', function(err, prompt) {
-  if (err) {
-    console.error(err);
-    process.exit(1);
-  }
+if (!program.profile) program.profile = 'default';
+if (!program.config)  program.config = path.resolve(process.env.HOME, './.httprompt.json');
 
-  prompt.start();
+var configs = new (require('../src/config/persistence'))(program.config);
+configs.load(function(err, config) {
+  if (err) die(err);
+
+  bootstrap(config, process.stdin, process.stdout, program.profile, function(err, prompt) {
+    if (err) die(err);
+    var rl = prompt.start();
+
+    rl.on('SIGINT', closeGracefully(config));
+  });
 });
+
+var closeGracefully = function(config) {
+  return function() {
+    configs.save(config, function(err) {
+      process.exit(0);
+    })
+  };
+};
