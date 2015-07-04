@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha tests --recursive -R dot",
-    "coverage-html": "istanbul cover --include-all-sources ./node_modules/mocha/bin/_mocha tests -- --recursive -R spec",
-    "coveralls": "istanbul cover --include-all-sources ./node_modules/mocha/bin/_mocha tests --report lcovonly -- --recursive -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "coverage-html": "istanbul cover -x src/app/commands/index.js -x src/bootstrap.js --include-all-sources ./node_modules/mocha/bin/_mocha tests -- --recursive -R spec",
+    "coveralls": "istanbul cover -x src/app/commands/index.js -x src/bootstrap.js --include-all-sources ./node_modules/mocha/bin/_mocha tests --report lcovonly -- --recursive -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "bin": {
     "httprompt": "./bin/httprompt"
