@@ -19,7 +19,15 @@
     "http",
     "rest"
   ],
-  "author": "Adrian Schneider",
+  "author": {
+    "name": "Adrian Schneider",
+    "email": "adrian@compiledintent.com",
+    "url": "http://adrianschneider.ca/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AdrianSchneider/httprompt.git"
+  },
   "dependencies": {
     "async": "^1.2.1",
     "commander": "^2.8.1",
@@ -33,5 +41,6 @@
     "istanbul": "^0.3.17",
     "mocha": "^2.2.5",
     "nodemock": "^0.3.4"
-  }
+  },
+  "preferGlobal": true
 }
