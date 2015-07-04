@@ -1,5 +1,7 @@
 'use strict';
 
+var async   = require('async');
+var spawn   = require('child_process').spawn;
 var Command = require('./command');
 
 /**
@@ -12,7 +14,8 @@ module.exports = function(config) {
     return [
       new Command('config list',              getList),
       new Command('config get <key>',         getConfig),
-      new Command('config set <key> <value>', setConfig)
+      new Command('config set <key> <value>', setConfig),
+      new Command('config edit',              editConfig)
     ];
   };
 
@@ -42,6 +45,30 @@ module.exports = function(config) {
 
     config.set(key, value);
     return done(null, 'ok');
+  };
+
+  var editConfig = function(request, done) {
+    async.series({
+      save: function(next) {
+        config.save(next);
+      },
+      edit: function(next) {
+        var name = getEditor();
+        if (!name) return done(new Error('No "editor" configured'));
+        var editor = spawn(name, [config.getFilename()], { stdio: 'inherit' });
+        editor.on('close', next);
+      },
+      load: function(next) {
+        config.load(next);
+      }
+    }, function(err) {
+      if (err) return done(err);
+      return done();
+    });
+  };
+  
+  var getEditor = function() {
+    return config.get('editor') || process.env.VISUAL || process.env.EDITOR;
   };
 
   return main();

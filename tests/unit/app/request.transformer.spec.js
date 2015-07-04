@@ -2,7 +2,7 @@
 
 var expect       = require('chai').expect;
 var nodemock     = require('nodemock');
-var Config       = require('../../../src/config/config');
+var Config       = require('../../../src/config/data');
 var Request      = require('../../../src/app/request');
 var HttpResponse = require('../../../src/http/response');
 var transformer  = require('../../../src/app/request.transformer');

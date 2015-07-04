@@ -1,9 +1,9 @@
 'use strict';
 
-var _        = require('underscore');
-var path     = require('path');
-var async    = require('async');
-var Config   = require('./config');
+var _          = require('underscore');
+var path       = require('path');
+var async      = require('async');
+var ConfigData = require('./data');
 
 module.exports = function ConfigPersistence(filename, defaults, fs) {
   if (!fs) fs = require('fs');
@@ -56,7 +56,7 @@ module.exports = function ConfigPersistence(filename, defaults, fs) {
    * @param {Function} done - called with Config instance
    */
   var toConfig = function(data, done) {
-    return done(null, new Config(data));
+    return done(null, new ConfigData(data));
   };
 
   /**

@@ -4,6 +4,7 @@
 var program   = require('commander');
 var path      = require('path');
 var bootstrap = require('../src/bootstrap');
+var Config    = require('../src/config');
 
 program
   .version('0.0.2')
@@ -14,22 +15,25 @@ program
 if (!program.profile) program.profile = 'default';
 if (!program.config)  program.config = path.resolve(process.env.HOME, './.httprompt.json');
 
-var configs = new (require('../src/config/persistence'))(program.config);
-configs.load(function(err, config) {
+var config = new Config(program.config);
+config.load(function(err) {
   if (err) die(err);
 
   bootstrap(config, process.stdin, process.stdout, program.profile, function(err, prompt) {
     if (err) die(err);
     var rl = prompt.start();
 
-    rl.on('SIGINT', closeGracefully(config));
+    rl.on('SIGINT', closeGracefully);
   });
 });
 
-var closeGracefully = function(config) {
-  return function() {
-    configs.save(config, function(err) {
-      process.exit(0);
-    })
-  };
+var closeGracefully = function() {
+  config.save(function() {
+    process.exit(0);
+  });
+};
+
+var die = function(err) {
+  console.error(err);
+  process.exit(1);
 };

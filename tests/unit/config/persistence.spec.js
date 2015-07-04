@@ -2,7 +2,7 @@
 
 var expect            = require('chai').expect;
 var nodemock          = require('nodemock');
-var Config            = require('../../../src/config/config');
+var ConfigData        = require('../../../src/config/data');
 var ConfigPersistence = require('../../../src/config/persistence');
 
 describe('Config Persistence', function() {
@@ -62,7 +62,7 @@ describe('Config Persistence', function() {
   describe('#save', function() {
 
     beforeEach(function() {
-      this.config = new Config({ changed: true });
+      this.config = new ConfigData({ changed: true });
       this.configString = JSON.stringify({ changed: true }, null, 2);
     });
 

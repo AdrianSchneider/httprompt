@@ -1,16 +1,11 @@
 'use strict';
 
-var _              = require('underscore');
-var ConfigProfiles = require('./profiles');
-
 /**
  * Wraps the raw config object adding a bit of safety
- * and collecting the configuration profiles
  *
  * @param {Object} data
  */
-module.exports = function Config(data) {
-  var profiles = new ConfigProfiles(data.profiles || {});
+module.exports = function ConfigData(data) {
 
   /**
    * Checks if a key exists
@@ -49,21 +44,8 @@ module.exports = function Config(data) {
    *
    * @return {String}
    */
-  this.serialize = function() {
-    return JSON.stringify(data, null, 2);
-  };
-  
-  this.getGlobals = function() {
-    return _.omit(data, 'profiles');
-  };
-
-  /**
-   * Gets the configuration profiles
-   *
-   * @return {ConfigProfiles}
-   */
-  this.getProfiles = function() {
-    return profiles;
+  this.serialize = function(spaces) {
+    return JSON.stringify(data, null, spaces || 2);
   };
 
 };

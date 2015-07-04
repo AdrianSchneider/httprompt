@@ -1,14 +1,13 @@
 'use strict';
 
-var expect         = require('chai').expect;
-var Config         = require('../../../src/config/config');
-var ConfigProfiles = require('../../../src/config/profiles');
+var expect     = require('chai').expect;
+var ConfigData = require('../../../src/config/data');
 
-describe('Config', function() {
+describe('ConfigData', function() {
 
   beforeEach(function() {
-    this.data = { app: 'httprompt', profiles: [] };
-    this.config = new Config(this.data);
+    this.data = { app: 'httprompt' };
+    this.config = new ConfigData(this.data);
   });
 
   describe('#has', function() {
@@ -55,22 +54,6 @@ describe('Config', function() {
     it('Stringifies all of the config for storage', function() {
       var expected = JSON.stringify(this.data, null, 2);
       expect(this.config.serialize()).to.equal(expected);
-    });
-
-  });
-
-  describe('#getGlobals', function() {
-
-    it('Returns all of the config globals', function() {
-      expect(this.config.getGlobals()).to.deep.equal({ app: 'httprompt' });
-    });
-
-  });
-
-  describe('#getProfiles', function() {
-
-    it('Converts the raw config profiles into a ConfigProfiles', function() {
-      expect(this.config.getProfiles()).to.be.an.instanceof(ConfigProfiles);
     });
 
   });
