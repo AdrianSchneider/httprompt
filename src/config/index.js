@@ -10,10 +10,10 @@ var ConfigPersistence = require('./persistence');
  *
  * @param {Object} data
  */
-module.exports = function Config(filename) {
+module.exports = function Config(filename, persistence) {
   var data;
   var profiles;
-  var persistence = new ConfigPersistence(filename, require('./defaults.json'));
+  if (!persistence) persistence = new ConfigPersistence(filename, require('./defaults.json'));
 
   /**
    * Loads the config from disk
@@ -35,8 +35,7 @@ module.exports = function Config(filename) {
    * @param {Function} done
    */
   this.save = function(done) {
-    if (!data) throw new Error('Cannot save until loaded');
-    persistence.save(data, done);
+    persistence.save(getData(), done);
   };
 
   /**
@@ -46,8 +45,7 @@ module.exports = function Config(filename) {
    * @return {Boolean}
    */
   this.has = function(key) {
-    if (!data) throw new Error('Cannot use config before loading it');
-    return data.has(key);
+    return getData().has(key);
   };
 
   /**
@@ -57,8 +55,7 @@ module.exports = function Config(filename) {
    * @return {*} the config value
    */
   this.get = function(key) {
-    if (!data) throw new Error('Cannot use config before loading it');
-    return data.get(key);
+    return getData().get(key);
   };
 
   /**
@@ -68,8 +65,7 @@ module.exports = function Config(filename) {
    * @param {*} value
    */
   this.set = function(key, value) {
-    if (!data) throw new Error('Cannot use config before loading it');
-    return data.set(key, value);
+    return getData().set(key, value);
   };
 
   this.getProfiles = function() {
@@ -82,9 +78,14 @@ module.exports = function Config(filename) {
 
   this.getGlobals = function() {
     return _.omit(
-      JSON.parse(data.serialize()),
+      JSON.parse(getData().serialize()),
       'profiles'
     );
+  };
+
+  var getData = function() {
+    if (!data) throw new Error('Cannot use config before loading it');
+    return data;
   };
 
 };
