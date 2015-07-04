@@ -5,11 +5,11 @@ var HttpResponse  = require('./response');
 /**
  * Responsible for making HTTP requests and managing client state
  *
- * @param {ServerProfile} profile
- * @param {Object} options
- * @param {Object} request library
+ * @param {Session} session
+ * @param {Object}  options
+ * @param {Object}  request library
  */
-module.exports = function HttpClient(user, options, request) {
+module.exports = function HttpClient(session, options, request) {
   if(!options) options = { json: true };
   if(!request) request = require('request');
 
@@ -23,8 +23,8 @@ module.exports = function HttpClient(user, options, request) {
     }
 
     request.get(
-      user.buildUrl(url),
-      user.buildOptions(query),
+      session.buildUrl(url),
+      session.buildOptions(query),
       handleResponse(done)
     );
   };
@@ -34,8 +34,8 @@ module.exports = function HttpClient(user, options, request) {
    */
   this.put = function(url, data, done) {
     request.put(
-      user.buildUrl(url),
-      user.buildOptions({}, data),
+      session.buildUrl(url),
+      session.buildOptions({}, data),
       handleResponse(done)
     );
   };
@@ -45,8 +45,8 @@ module.exports = function HttpClient(user, options, request) {
    */
   this.post = function(url, data, done) {
     request.post(
-      user.buildUrl(url),
-      user.buildOptions({}, data),
+      session.buildUrl(url),
+      session.buildOptions({}, data),
       handleResponse(done)
     );
   };
@@ -56,8 +56,8 @@ module.exports = function HttpClient(user, options, request) {
    */
   this.del = function(url, done) {
     request.del(
-      user.buildUrl(url),
-      user.buildOptions(),
+      session.buildUrl(url),
+      session.buildOptions(),
       handleResponse(done)
     );
   };
