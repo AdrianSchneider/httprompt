@@ -15,11 +15,11 @@ var Request = require('../app/request');
 module.exports = function Prompt(readline, dispatcher, renderer, options) {
   var name = 'httprompt> ';
   var rl = readline.createInterface(options);
-  rl.history = ['test'];
-  rl.historyIndex = 0;
 
   /**
-   * Starts the prompt
+   * Starts and returns the prompt
+   *
+   * @return {readline.Interface}
    */
   this.start = function() {
     rl.setPrompt(name);
@@ -27,6 +27,11 @@ module.exports = function Prompt(readline, dispatcher, renderer, options) {
     return rl;
   };
 
+  /**
+   * Renames the prompt with a new name
+   *
+   * @param {String} newName
+   */
   this.rename = function(newName) {
     if (newName === 'default') newName = 'httprompt';
     name = newName + '> ';
