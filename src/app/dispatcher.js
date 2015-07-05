@@ -53,7 +53,11 @@ module.exports = function Dispatcher(session, baseCommands, config) {
    * Refreshes the commands based on the session
    */
   var refreshCommands = function() {
-    commands = [].concat(baseCommands).concat(session.getProfile().getCommands(dispatcher));
+    commands = [].concat(baseCommands);
+    if (session.getProfile()) {
+      commands = commands.concat(session.getProfile().getCommands(dispatcher));
+    }
+
     commands.forEach(function(command) {
       command.setDispatcher(dispatcher);
     });

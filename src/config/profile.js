@@ -19,10 +19,20 @@ function ConfigProfile(name, baseUrl, actions, vars, startupTasks) {
   var session;
   var active = false;
 
+  /**
+   * Gets the name of this profile
+   *
+   * @return {String}
+   */
   this.getName = function() {
     return name;
   };
 
+  /**
+   * Is this profile currently active
+   *
+   * @return {Boolean}
+   */
   this.isActive = function() {
     return active;
   };
@@ -32,8 +42,10 @@ function ConfigProfile(name, baseUrl, actions, vars, startupTasks) {
    * Ensures a session is ready
    *
    * @param {Session} userSession
+   * @param {Dispatcher} dispatcher
+   * @param {Function} done
    */
-  this.activate = function(userSession) {
+  this.activate = function(userSession, dispatcher, done) {
     active = true;
     if (!session) {
       session = new Namespace(this);
@@ -42,7 +54,13 @@ function ConfigProfile(name, baseUrl, actions, vars, startupTasks) {
           session.log(request, response);
         }
       });
+
+      return async.eachSeries(startupTasks, function(line, next) {
+        dispatcher.dispatch(new Request(line), next);
+      }, done);
     }
+
+    done();
   };
 
   /**
@@ -127,14 +145,6 @@ function ConfigProfile(name, baseUrl, actions, vars, startupTasks) {
     return vars[key];
   };
 
-  /**
-   * Gets the startup tasks
-   *
-   * @return {Array<String>}
-   */
-  this.getStartupTasks = function() {
-    return startupTasks;
-  };
 }
 
 /**

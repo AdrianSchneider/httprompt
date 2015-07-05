@@ -17,6 +17,7 @@ var Session            = require('./session/session');
  * Application setup
  * Exports a ready Prompt
  *
+ * @param {Config}   config
  * @param {Stream}   stdin
  * @param {Stream}   stdout
  * @param {String}   profileName
@@ -24,19 +25,15 @@ var Session            = require('./session/session');
  */
 module.exports = function(config, stdin, stdout, profileName, done) {
   var container = new ServiceContainer();
-  try {
-    container.set('config', config);
-    container.set('session', new Session(config.getProfiles(), profileName));
-    container.set('renderer', new Renderer(config, {
-      console : require('./ui/renderers/console'),
-      jsonfui : require('./ui/renderers/jsonfui'),
-      less    : require('./ui/renderers/less')
-    }));
+  container.set('config', config);
+  container.set('session', new Session(config.getProfiles()));
+  container.set('httpClient', new HttpClient(container.get('session')));
+  container.set('renderer', new Renderer(config, {
+    console : require('./ui/renderers/console'),
+    jsonfui : require('./ui/renderers/jsonfui'),
+    less    : require('./ui/renderers/less')
+  }));
 
-    container.set('httpClient', new HttpClient(container.get('session')));
-  } catch (e) {
-    return done(e);
-  }
 
   var dispatcher = new Dispatcher(container.get('session'), commands(container), config);
   var prompt = new Prompt(
@@ -46,17 +43,11 @@ module.exports = function(config, stdin, stdout, profileName, done) {
     { input: stdin, output: stdout }
   );
 
-  if (profileName !== 'default') {
-    prompt.rename(container.get('session').getProfile().getName());
-  }
-
   container.get('session').on('profiles.switch', function(profile) {
     prompt.rename(profile.getName());
   });
 
-  async.eachSeries(container.get('session').getProfile().getStartupTasks(), function(line, next) {
-    dispatcher.dispatch(new Request(line), next);
-  }, function(err) {
+  container.get('session').switchProfile(profileName, dispatcher, function(err) {
     if (err) return done(err);
     return done(null, prompt);
   });

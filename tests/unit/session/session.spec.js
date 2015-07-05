@@ -11,11 +11,19 @@ var HttpResponse = require('../../../src/http/response');
 
 describe('Session', function() {
 
+  beforeEach(function() {
+    this.dispatcher = nodemock.mock();
+  });
+
+  afterEach(function() {
+    this.dispatcher.assertThrows();
+  });
+
   describe('Construction', function() {
 
-    it('Switches to the selected profile', function() {
+    it('Starts off without a profile set', function() {
       var session = new Session(new Profiles({ profileName: {} }), 'profileName');
-      expect(session.getProfile().getName()).to.equal('profileName');
+      expect(session.getProfile()).to.equal(undefined);
     });
   });
 
@@ -30,18 +38,24 @@ describe('Session', function() {
       });
     });
 
-    it('Deactivates all profiles', function() {
+    it('Deactivates all profiles', function(done) {
       var session = new Session(this.profiles, 'default');
-      session.switchProfile('c');
-      expect(this.profiles.get('default').isActive()).to.equal(false);
-      expect(this.profiles.get('a').isActive()).to.equal(false);
-      expect(this.profiles.get('b').isActive()).to.equal(false);
+      session.switchProfile('c', this.dispatcher, function(err) {
+        if (err) return done(err);
+        expect(this.profiles.get('default').isActive()).to.equal(false);
+        expect(this.profiles.get('a').isActive()).to.equal(false);
+        expect(this.profiles.get('b').isActive()).to.equal(false);
+        done();
+      }.bind(this));
     });
 
-    it('Activates the selected profile', function() {
+    it('Activates the selected profile', function(done) {
       var session = new Session(this.profiles, 'default');
-      session.switchProfile('c');
-      expect(this.profiles.get('c').isActive()).to.equal(true);
+      session.switchProfile('c', this.dispatcher, function(err) {
+        if (err) return done(err);
+        expect(this.profiles.get('c').isActive()).to.equal(true);
+        done();
+      }.bind(this));
     });
 
     it('Emits a profiles.switch event', function(done) {
@@ -49,8 +63,8 @@ describe('Session', function() {
       session.on('profiles.switch', function(profile) {
         expect(profile.getName()).to.equal('a');
         done();
-      });
-      session.switchProfile('a');
+      }.bind(this));
+      session.switchProfile('a', this.dispatcher, function(){});
     });
 
   });

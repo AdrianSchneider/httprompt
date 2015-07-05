@@ -27,11 +27,13 @@ function Session(profiles, profileName) {
    * Switches the active profile
    * @param {String} name
    */
-  this.switchProfile = function(name) {
+  this.switchProfile = function(name, dispatcher, done) {
     profile = profiles.get(name);
     profiles.apply(function(p) { p.deactivate(); });
-    profile.activate(this);
-    this.emit('profiles.switch', profile);
+    profile.activate(this, dispatcher, function(err) {
+      this.emit('profiles.switch', profile);
+      done(err);
+    }.bind(this));
   };
 
   /**
@@ -84,8 +86,6 @@ function Session(profiles, profileName) {
   this.getLastResponse = function() {
     return profile.getSession().getHistory().getLastResponse();
   };
-
-  if (profileName) this.switchProfile(profileName);
 }
 
 util.inherits(Session, EventEmitter);

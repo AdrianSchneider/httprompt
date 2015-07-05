@@ -10,7 +10,7 @@ var Command = require('./command');
 module.exports = function(config, session) {
   var main = function() {
     return [
-      new Command('profiles list',          listProfiles), 
+      new Command('profiles list',          listProfiles),
       new Command('profiles switch <name>', switchProfile)
     ];
   };
@@ -21,8 +21,7 @@ module.exports = function(config, session) {
 
   var switchProfile = function(request, done) {
     try {
-      session.switchProfile(request.get('name'));
-      done();
+      session.switchProfile(request.get('name'), this.getDispatcher(), done);
     } catch (e) {
       return done(e);
     }
