@@ -35,6 +35,7 @@ module.exports = function Config(filename, persistence) {
    * @param {Function} done
    */
   this.save = function(done) {
+    getData().set('profiles', profiles.serialize());
     persistence.save(getData(), done);
   };
 

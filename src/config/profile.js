@@ -145,6 +145,20 @@ function ConfigProfile(name, baseUrl, actions, vars, startupTasks) {
     return vars[key];
   };
 
+  /**
+   * Serializes the profile for storage
+   *
+   * @return {Object}
+   */
+  this.serialize = function() {
+    return {
+      baseUrl      : baseUrl,
+      actions      : actions,
+      vars         : vars,
+      startupTasks : startupTasks
+    };
+  };
+
 }
 
 /**
