@@ -10,10 +10,12 @@ var Command = require('./command');
 module.exports = function(config, session) {
   var main = function() {
     return [
-      new Command('profiles list',                 listProfiles),
-      new Command('profiles switch <name>',        switchProfile),
-      new Command('profiles add <name> <baseUrl>', addProfile),
-      new Command('profiles remove <name>',        removeProfile)
+      new Command('profiles list',                   listProfiles),
+      new Command('profiles switch <name>',          switchProfile),
+      new Command('profiles add <name> <baseUrl>',   addProfile),
+      new Command('profiles remove <name>',          removeProfile),
+      new Command('profile vars',                    listVars),
+      new Command('profile vars set <key> <value>',  profileSet)
     ];
   };
 
@@ -45,6 +47,15 @@ module.exports = function(config, session) {
     } catch (e) {
       return done(e);
     }
+  };
+
+  var listVars = function(request, done) {
+    done(null, session.getProfile().getVariables());
+  };
+
+  var profileSet = function(request, done) {
+    session.getProfile().setVariable(request.get('key'), request.get('value'));
+    done();
   };
 
   return main();

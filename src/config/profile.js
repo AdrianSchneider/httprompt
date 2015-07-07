@@ -146,6 +146,25 @@ function ConfigProfile(name, baseUrl, actions, vars, startupTasks) {
   };
 
   /**
+   * Sets a specific variable
+   *
+   * @param {String} key
+   * @param {*} value
+   */
+  this.setVariable = function(key, value) {
+    vars[key] = value;
+  };
+
+  /**
+   * Gets all of the variables
+   *
+   * @return {Object}
+   */
+  this.getVariables = function() {
+    return vars;
+  };
+
+  /**
    * Serializes the profile for storage
    *
    * @return {Object}
