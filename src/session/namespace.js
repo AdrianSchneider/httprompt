@@ -47,12 +47,10 @@ module.exports = function SessionNamespace(profile) {
   };
 
   this.buildOptions = function(query, data, headers) {
-    var opts = _.extend(
+    return _.extend(
       { jar: jar },
       profile.buildOptions(query, data, headers)
     );
-
-    return opts;
   };
 
 
