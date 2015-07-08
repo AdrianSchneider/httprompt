@@ -1,5 +1,6 @@
 'use strict';
 
+var _             = require('underscore');
 var util          = require('util');
 var EventEmitter  = require('events').EventEmitter;
 var ConfigProfile = require('../config/profile');
@@ -68,7 +69,10 @@ function Session(profiles, profileName) {
    * @return {Object}
    */
   this.buildOptions = function(query, data, headers) {
-    return profile.getSession().buildOptions(query, data, headers);
+    return _.extend(
+      profile.getSession().buildOptions(query, data, headers),
+      profile.getRequestOptions()
+    );
   };
 
   this.setHeader = function(header, value) {

@@ -12,7 +12,8 @@ describe('Config Profiles', function() {
         baseUrl: "http://localhost",
         actions: {},
         vars: {},
-        startupTasks: []
+        startupTasks: [],
+        requestOptions: {}
       }
     };
     this.profiles = new ConfigProfiles(this.data);

@@ -11,10 +11,11 @@ var Namespace = require('../session/namespace');
  *
  * @param {String} baseUrl
  */
-function ConfigProfile(name, baseUrl, actions, vars, startupTasks) {
+function ConfigProfile(name, baseUrl, actions, vars, startupTasks, requestOptions) {
   if (!vars) vars = {};
   if (!actions) actions = {};
   if (!startupTasks) startupTasks = [];
+  if (!requestOptions) requestOptions = {};
 
   var session;
   var active = false;
@@ -171,11 +172,16 @@ function ConfigProfile(name, baseUrl, actions, vars, startupTasks) {
    */
   this.serialize = function() {
     return {
-      baseUrl      : baseUrl,
-      actions      : actions,
-      vars         : vars,
-      startupTasks : startupTasks
+      baseUrl        : baseUrl,
+      actions        : actions,
+      vars           : vars,
+      startupTasks   : startupTasks,
+      requestOptions : requestOptions
     };
+  };
+
+  this.getRequestOptions = function() {
+    return requestOptions;
   };
 
 }
@@ -190,9 +196,10 @@ ConfigProfile.fromConfig = function(name, config) {
   return new ConfigProfile(
     name,
     config.baseUrl,
-    config.actions || {},
-    config.vars    || {},
-    config.startup || []
+    config.actions        || {},
+    config.vars           || {},
+    config.startup        || [],
+    config.requestOptions || {}
   );
 };
 

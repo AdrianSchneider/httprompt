@@ -9,6 +9,7 @@
   "profiles": {
     "default": {
       "baseUrl": "",
+      "requestOptions": {},
       "vars": {
         "key": "value"
       },
