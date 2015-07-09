@@ -12,6 +12,7 @@ module.exports = function(config, session) {
     return [
       new Command('profiles list',                   listProfiles),
       new Command('profiles switch <name>',          switchProfile),
+      new Command('use <name>',                      switchProfile),
       new Command('profiles add <name> <baseUrl>',   addProfile),
       new Command('profiles remove <name>',          removeProfile),
       new Command('profile vars',                    listVars),
