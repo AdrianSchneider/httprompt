@@ -90,6 +90,10 @@ function ConfigProfile(name, baseUrl, actions, vars, startupTasks, requestOption
    * @return {String}
    */
   this.buildUrl = function(path) {
+    if(path.indexOf('http:') === 0 || path.indexOf('https:') === 0) {
+      return path;
+    }
+
     return baseUrl + path;
   };
 
