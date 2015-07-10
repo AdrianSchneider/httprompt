@@ -24,7 +24,12 @@ config.load(function(err) {
     if (err) die(err);
     var rl = prompt.start();
 
-    rl.on('SIGINT', closeGracefully);
+    rl.on('SIGINT', function() {
+      if(!rl.line) return closeGracefully();
+      rl.write("^C");
+      rl.clearLine();
+      rl.prompt();
+    });
   });
 });
 
