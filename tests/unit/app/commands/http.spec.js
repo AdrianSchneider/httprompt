@@ -144,7 +144,7 @@ describe('HTTP Commands', function() {
       var request = new Request('delete /users/5');
 
       this.client
-        .mock('delete')
+        .mock('del')
         .takes('/users/5', function(){})
         .calls(1, [null]);
 

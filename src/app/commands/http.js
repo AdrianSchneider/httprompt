@@ -49,7 +49,7 @@ module.exports = function HttpCommands(client) {
         'get'    : async.apply(client.get, url, {}),
         'post'   : async.apply(client.post, url, payload),
         'put'    : async.apply(client.put, url, payload),
-        'delete' : async.apply(client.delete, url)
+        'delete' : async.apply(client.del, url)
       };
 
       commands[method](done);
