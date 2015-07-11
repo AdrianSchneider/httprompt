@@ -2,6 +2,7 @@
 
 var async   = require('async');
 var Command = require('./command');
+var parse   = require('../request.parser');
 
 /**
  * HTTP Client Command Handlers
@@ -33,17 +34,7 @@ module.exports = function HttpCommands(client) {
 
       var method = parts[0].toLowerCase();
       var url = parts[1];
-      var payload = parts.slice(2).join(' ');
-
-      if (payload) {
-        try {
-          payload = JSON.parse(payload);
-        } catch (e) { 
-          payload = null;
-        }
-      }
-
-      if (!payload) payload = null;
+      var payload = parse(parts.slice(2).join(' ')) || null;
 
       var commands = {
         'get'    : async.apply(client.get, url, {}),
