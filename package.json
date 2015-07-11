@@ -31,6 +31,7 @@
   "dependencies": {
     "async": "^1.2.1",
     "commander": "^2.8.1",
+    "readline-vim": "^0.3.2",
     "request": "^2.58.0",
     "underscore": "^1.8.3"
   },

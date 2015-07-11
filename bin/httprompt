@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 'use strict';
 
-var program   = require('commander');
-var path      = require('path');
-var bootstrap = require('../src/bootstrap');
-var Config    = require('../src/config');
-var npmconfig = require('../package.json');
+var program     = require('commander');
+var path        = require('path');
+var readlineVim = require('readline-vim');
+var bootstrap   = require('../src/bootstrap');
+var Config      = require('../src/config');
+var npmconfig   = require('../package.json');
 
 program
   .version(npmconfig.version)
@@ -23,6 +24,7 @@ config.load(function(err) {
   bootstrap(config, process.stdin, process.stdout, program.profile, function(err, prompt) {
     if (err) die(err);
     var rl = prompt.start();
+    if (config.get('vim')) readlineVim(rl);
 
     rl.on('SIGINT', function() {
       if(!rl.line) return closeGracefully();
