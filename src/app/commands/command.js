@@ -10,7 +10,7 @@ function Command(help, matcher, processor) {
   }
 
   this.match = matcher;
-  this.process = processor;
+  this.process = processor.bind(this);
 
   this.setSession = function(session) {
     this.session = session;
