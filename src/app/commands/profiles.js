@@ -21,7 +21,7 @@ module.exports = function(config, session) {
   };
 
   var listProfiles = function(request, done) {
-    done(null, config.getProfiles().getList().sort());
+    done(null, config.getProfiles().getList());
   };
 
   var switchProfile = function(request, done) {

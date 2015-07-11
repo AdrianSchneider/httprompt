@@ -34,7 +34,7 @@ module.exports = function ConfigProfiles(rawProfiles) {
    * @return {Array}
    */
   this.getList = function() {
-    return Object.keys(profiles);
+    return Object.keys(profiles).sort();
   };
 
   /**
