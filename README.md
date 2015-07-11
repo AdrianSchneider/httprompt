@@ -22,9 +22,17 @@ Run `httprompt` to open the prompt. Common commands:
 - `DELETE <url>`
 - type `help` to see more	
 
-For now, only JSON is fully supported:
+Currently only JSON payloads are supported. `<payload>` can either be:
+
+### Embedded JSON
 
 `POST /register { "username": "admin", "password": "letmein" }`
+
+### Key/Value Pairs
+
+`POST /register username=admin password=letmein` 
+
+`POST /comments message="some message with spaces"`
 
 ### External Viewers
 
@@ -33,10 +41,13 @@ By default, each command will just dump output to the screen, which may be hard 
 
 ## Configuration
 
-Running httprompt the first time will create a `~/.httprompt.json` configuration file. 
+You can manage config in the app with `config set <key> <value>`, or you can run `config edit` to open the config file in your `$EDITOR`.
+
+Options:
 
 - `external` sets the default external viewer. defaults to `less`
 - `external.json` sets the default external json viewer. defaults to `less`. [jsonfui](https://github.com/adrianschneider/jsonfui) is recommended as a better alternative
+- `vim` sets vim keys (hjkl to move around, modes, etc)
 
 ### Profiles
 
@@ -46,6 +57,7 @@ The `default` profile is loaded by default, or optionally specify another with `
 
 - `baseUrl`: sets the base URL (prepend to all URLs). Example: `http://yoursite.com` or `http://localhost:8888`
 - `vars`: set arbitrary variables here that you can use in commands. For example, if you set `username` and `password`, you could use `$(vars.username)` and `$(vars.password)` in commands and they would be expanded.
+- `startupTasks`: defines an array of tasks to run when opening a profile for the first time
 - `actions`: defines custom commands made up of existing commands. For example, you could define login:
 
 ```
