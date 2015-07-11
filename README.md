@@ -45,6 +45,7 @@ You can manage config in the app with `config set <key> <value>`, or you can run
 
 Options:
 
+- `default.profile` sets the default profile to use
 - `external` sets the default external viewer. defaults to `less`
 - `external.json` sets the default external json viewer. defaults to `less`. [jsonfui](https://github.com/adrianschneider/jsonfui) is recommended as a better alternative
 - `vim` sets vim keys (hjkl to move around, modes, etc)
@@ -53,7 +54,7 @@ Options:
 
 Edit the `profiles` config option to add new profiles.
 
-The `default` profile is loaded by default, or optionally specify another with `httprompt -p <profileName>`
+The `config.default.profile` profile is loaded by default, or optionally specify another with `httprompt -p <profileName>`
 
 - `baseUrl`: sets the base URL (prepend to all URLs). Example: `http://yoursite.com` or `http://localhost:8888`
 - `vars`: set arbitrary variables here that you can use in commands. For example, if you set `username` and `password`, you could use `$(vars.username)` and `$(vars.password)` in commands and they would be expanded.

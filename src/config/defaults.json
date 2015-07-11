@@ -5,6 +5,7 @@
   "external": "less",
   "external.json": "less",
   "history.length": 100,
+  "default.profile": "default",
   "vim": false,
   "editor": "",
   "profiles": {
