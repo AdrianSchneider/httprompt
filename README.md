@@ -64,7 +64,7 @@ The `default` profile is loaded by default, or optionally specify another with `
   "baseUrl": "http://localhost:8888",
   "actions": {
     "login <username> <password>": [
-      "POST /login { \"username\": \"$(input.username)\", \"password\": \"$(input.password)\""
+      "POST /login username=$(input.username) password=$(input.password)"
     ]
   }
 ```
