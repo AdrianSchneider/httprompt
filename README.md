@@ -24,15 +24,20 @@ Run `httprompt` to open the prompt. Common commands:
 
 Currently only JSON payloads are supported. `<payload>` can either be:
 
-### Embedded JSON
-
-`POST /register { "username": "admin", "password": "letmein" }`
 
 ### Key/Value Pairs
 
 `POST /register username=admin password=letmein` 
 
 `POST /comments message="some message with spaces"`
+
+If you need more complex data entry, you'll probably want to use the embedded JSON.
+
+### Embedded JSON
+
+`POST /register { "username": "admin", "password": "letmein" }`
+
+JSON payloads must be well-conformed (keys *must* be quoted).
 
 ### External Viewers
 
