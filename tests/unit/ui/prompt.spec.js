@@ -18,7 +18,7 @@ describe('Prompt', function() {
 
   afterEach(function() {
     this.renderer.assertThrows();
-    this.dispatcher.assertThrows();
+    if (this.dispatcher.assertThrows) this.dispatcher.assertThrows();
   });
 
   it('Skips and resumes on ""', function(done) {
@@ -70,6 +70,30 @@ describe('Prompt', function() {
 
     var rl = this.prompt.start();
     rl.on('prompt', done);
+    rl.emit('line', 'a');
+  });
+
+  it('Queues requests so only one happens at a time', function(done) {
+    var number = 0;
+
+    this.readline = { createInterface: function() { return new Interface(); }  };
+    this.renderer = nodemock.mock();
+    this.dispatcher = {
+      dispatch: function(req, cb) {
+        setTimeout(function() { cb(null, true, ++number); }, 7); 
+      }
+    };
+    this.prompt = new Prompt(this.readline, this.dispatcher, this.renderer, {});
+
+    this.renderer.mock('render').takes('console', 1, function(){}).calls(2, []);
+    this.renderer.mock('render').takes('console', 2, function(){}).calls(2, []);
+
+    var rl = this.prompt.start();
+    rl.on('prompt', function() {
+      expect(number).to.equal(2);
+      done();
+    });
+    rl.emit('line', 'a');
     rl.emit('line', 'a');
   });
 

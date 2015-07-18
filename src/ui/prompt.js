@@ -1,5 +1,6 @@
 'use strict';
 
+var async   = require('async');
 var Request = require('../app/request');
 
 /**
@@ -14,7 +15,19 @@ var Request = require('../app/request');
  */
 module.exports = function Prompt(readline, dispatcher, renderer, options) {
   var name = 'httprompt> ';
-  var rl = readline.createInterface(options);
+  var rl;
+  var queue;
+
+  /**
+   * Called on instantiate
+   */
+  var init = function() {
+    queue = async.queue(onRequest);
+    queue.drain = function() { rl.prompt(); };
+
+    rl = readline.createInterface(options);
+    rl.on('line', onLine);
+  };
 
   /**
    * Starts and returns the prompt
@@ -40,18 +53,29 @@ module.exports = function Prompt(readline, dispatcher, renderer, options) {
 
   /**
    * Called whenever a line is received from the repl
+   * Captures the request and queues it
    *
    * @param {String} line - line from repl
    */
   var onLine = function(line) {
-    rl.pause();
     if (line === '') return afterResponse();
+    queue.push(new Request(line));
+    rl.pause();
+  };
 
-    dispatcher.dispatch(new Request(line), function(err, matched, result) {
+  /**
+   * Processes a request in a controlled manner
+   *
+   * @param {Request} request
+   * @param {Function} done - notifies queue
+   */
+  var onRequest = function(request, done) {
+    dispatcher.dispatch(request, function(err, matched, result) {
       if (err) return renderer.render('console', err, afterResponse);
       if (!matched) return renderer.render('console', new Error('Unknown command; type "help" for some ideas'), afterResponse);
-      renderer.render('console', result, afterResponse);
+      renderer.render('console', result, done);
     });
+
   };
 
   /**
@@ -61,5 +85,6 @@ module.exports = function Prompt(readline, dispatcher, renderer, options) {
     rl.prompt();
   };
 
-  rl.on('line', onLine);
+  init();
+
 };
