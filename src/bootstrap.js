@@ -12,6 +12,7 @@ var Prompt             = require('./ui/prompt');
 var HttpClient         = require('./http/client');
 var Profile            = require('./config/profile');
 var Session            = require('./session/session');
+var SessionWriter      = require('./session/writer');
 
 /**
  * Application setup
@@ -23,10 +24,11 @@ var Session            = require('./session/session');
  * @param {String}   profileName
  * @param {Function} done
  */
-module.exports = function(config, stdin, stdout, profileName, done) {
+module.exports = function(config, stdin, stdout, profileName, transcriptFile, done) {
   var container = new ServiceContainer();
   container.set('config', config);
-  container.set('session', new Session(config.getProfiles()));
+  container.set('sessionWriter', transcriptFile ? new SessionWriter(transcriptFile, require('fs')) : null);
+  container.set('session', new Session(config.getProfiles(), container.get('sessionWriter')));
   container.set('httpClient', new HttpClient(container.get('session')));
   container.set('renderer', new Renderer(config, {
     console : require('./ui/renderers/console'),
@@ -49,6 +51,6 @@ module.exports = function(config, stdin, stdout, profileName, done) {
 
   container.get('session').switchProfile(profileName, dispatcher, function(err) {
     if (err) return done(err);
-    return done(null, prompt);
+    return done(null, prompt, container.get('session'));
   });
 };

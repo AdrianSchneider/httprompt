@@ -20,6 +20,15 @@ module.exports = function History() {
   };
 
   /**
+   * Gets all of the entries from history
+   *
+   * @return {Array<Entry>}
+   */
+  this.getEntries = function() {
+    return entries;
+  };
+
+  /**
    * Gets the last response
    *
    * @return

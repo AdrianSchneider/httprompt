@@ -12,6 +12,7 @@ program
   .version(npmconfig.version)
   .option('-p --profile [value]', 'Start with profile')
   .option('-c --config [file]', 'Config filename')
+  .option('-o --output [file]', 'Transcript output filename')
   .parse(process.argv);
 
 if (!program.config)  program.config = path.resolve(process.env.HOME, './.httprompt.json');
@@ -20,13 +21,16 @@ var config = new Config(program.config);
 config.load(function(err) {
   if (err) die(err);
 
-  bootstrap(config, process.stdin, process.stdout, program.profile || config.get('default.profile'), function(err, prompt) {
+  var profile = program.profile || config.get('default.profile');
+  var transcriptFile = program.output;
+
+  bootstrap(config, process.stdin, process.stdout, profile, transcriptFile, function(err, prompt, session) {
     if (err) die(err);
     var rl = prompt.start();
     if (config.get('vim')) readlineVim(rl);
 
     rl.on('SIGINT', function() {
-      if(!rl.line) return closeGracefully();
+      if(!rl.line) return closeGracefully(session);
       rl.write("^C");
       rl.clearLine();
       rl.prompt();
@@ -34,9 +38,12 @@ config.load(function(err) {
   });
 });
 
-var closeGracefully = function() {
-  config.save(function() {
-    process.exit(0);
+var closeGracefully = function(session) {
+  session.end(function(err) {
+    if (err) console.error(err);
+    config.save(function() {
+      process.exit(0);
+    });
   });
 };
 

@@ -5,16 +5,19 @@ var util          = require('util');
 var EventEmitter  = require('events').EventEmitter;
 var ConfigProfile = require('../config/profile');
 var HttpResponse  = require('../http/response');
+var Entry         = require('./entry');
+var History       = require('./history');
 
 /**
  * Represents the user's session with the prompt
  *
- * @param {ConfigProfiles} profiles
- * @param {String|null}    profileName
+ * @param {ConfigProfiles}     profiles
+ * @param {SessionWriter|null} writer
  */
-function Session(profiles, profileName) {
+function Session(profiles, writer) {
   EventEmitter.call(this);
   var profile;
+  var history = new History();
 
   /**
    * Gets the active profile
@@ -45,8 +48,17 @@ function Session(profiles, profileName) {
    */
   this.log = function(request, response) {
     if (response instanceof HttpResponse) {
+      history.log(new Entry(request, response));
       this.emit('entry', request, response);
     }
+  };
+
+  /**
+   * Called when the user's session has ended
+   */
+  this.end = function(done) {
+    if (!writer) return done();
+    return writer.write(history, done);
   };
 
 
