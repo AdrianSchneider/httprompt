@@ -26,8 +26,9 @@ module.exports = function SessionWriter(filename, fs) {
    */
   var prepareHistory = function(entries) {
     return entries.map(function(entry) {
-      return entry.getLine().getLine();
-    }).join('\n\n');
+      return entry.getLine().getLine() + '\n\n' + 
+        ' > ' + entry.getResponse().serialize().split('\n').join('\n > ');
+    }).join('\n\n') + '\n';
   };
 
 };
