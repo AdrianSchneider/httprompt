@@ -59,7 +59,7 @@ Options:
 
 Edit the `profiles` config option to add new profiles.
 
-The `config.default.profile` profile is loaded by default, or optionally specify another with `httprompt -p <profileName>`
+The profile specified by `default.profile` is loaded by default, or optionally specify another with `httprompt -p <profileName>`
 
 - `baseUrl`: sets the base URL (prepend to all URLs). Example: `http://yoursite.com` or `http://localhost:8888`
 - `vars`: set arbitrary variables here that you can use in commands. For example, if you set `username` and `password`, you could use `$(vars.username)` and `$(vars.password)` in commands and they would be expanded.
