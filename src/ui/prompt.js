@@ -58,7 +58,7 @@ module.exports = function Prompt(readline, dispatcher, renderer, options) {
    * @param {String} line - line from repl
    */
   var onLine = function(line) {
-    if (line === '') return afterResponse();
+    if (line === '') return rl.prompt();
     queue.push(new Request(line));
     rl.pause();
   };
@@ -71,18 +71,11 @@ module.exports = function Prompt(readline, dispatcher, renderer, options) {
    */
   var onRequest = function(request, done) {
     dispatcher.dispatch(request, function(err, matched, result) {
-      if (err) return renderer.render('console', err, afterResponse);
-      if (!matched) return renderer.render('console', new Error('Unknown command; type "help" for some ideas'), afterResponse);
+      if (err) return renderer.render('console', err, done);
+      if (!matched) return renderer.render('console', new Error('Unknown command; type "help" for some ideas'), done);
       renderer.render('console', result, done);
     });
 
-  };
-
-  /**
-   * Called after rendering
-   */
-  var afterResponse = function() {
-    rl.prompt();
   };
 
   init();
