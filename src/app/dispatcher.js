@@ -30,13 +30,37 @@ module.exports = function Dispatcher(session, baseCommands, config) {
     var command = getMatchingCommand(request);
     if (!command) return done(null, false);
 
-    return handleAsyncCommand(command, request, handleResponse(request, done));
+    // Synchronous
+    if (command.process.length === 1) {
+      return handleSyncCommand(command, request, handleResponse(request, done));
+    }
+
+    return command.process(request, handleResponse(request, done));
   };
 
-  var handleAsyncCommand = function(command, request, done) {
-    command.process(request, done);
+  /**
+   * Wraps a sync command processor in try/catch and calls callback with response/error
+   *
+   * @param {Command} command
+   * @param {Request} request
+   * @param {Function} done
+   */
+  var handleSyncCommand = function(command, request, done) {
+    try {
+      var response = command.process(request);
+      done(null, response);
+    } catch (e) {
+      done(e);
+    }
   };
 
+  /**
+   * Response handler after command processor finishes
+   *
+   * @param {Request} request
+   * @param {Function} done
+   * @return {Function}
+   */
   var handleResponse = function(request, done) {
     return function(err, response) {
       if (err) return done(err);

@@ -18,6 +18,7 @@ function Session(profiles, writer) {
   EventEmitter.call(this);
   var profile;
   var history = new History();
+  var vars = {};
 
   /**
    * Gets the active profile
@@ -71,6 +72,16 @@ function Session(profiles, writer) {
   this.buildUrl = function(path) {
     return profile.buildUrl(path);
   };
+
+  this.set = function(key, value) {
+    vars[key] = value;
+  };
+
+  this.get = function(key) {
+    return vars[key];
+  };
+
+
 
   /**
    * Generates the options to use for the request
