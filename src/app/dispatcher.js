@@ -30,11 +30,19 @@ module.exports = function Dispatcher(session, baseCommands, config) {
     var command = getMatchingCommand(request);
     if (!command) return done(null, false);
 
-    return command.process(request, function(err, response) {
+    return handleAsyncCommand(command, request, handleResponse(request, done));
+  };
+
+  var handleAsyncCommand = function(command, request, done) {
+    command.process(request, done);
+  };
+
+  var handleResponse = function(request, done) {
+    return function(err, response) {
       if (err) return done(err);
       session.log(request, response);
       return done(null, true, response);
-    });
+    };
   };
 
   /**
