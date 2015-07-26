@@ -62,7 +62,7 @@ Edit the `profiles` config option to add new profiles.
 The profile specified by `default.profile` is loaded by default, or optionally specify another with `httprompt -p <profileName>`
 
 - `baseUrl`: sets the base URL (prepend to all URLs). Example: `http://yoursite.com` or `http://localhost:8888`
-- `vars`: set arbitrary variables here that you can use in commands. For example, if you set `username` and `password`, you could use `$(vars.username)` and `$(vars.password)` in commands and they would be expanded.
+- `vars`: set arbitrary variables here that you can use in commands. For example, if you set `username` and `password`, you could use `$(profile.username)` and `$(profile.password)` in commands and they would be expanded.
 - `startupTasks`: defines an array of tasks to run when opening a profile for the first time
 - `actions`: defines custom commands made up of existing commands. For example, you could define login:
 

@@ -37,12 +37,20 @@ describe('Request Transformer', function() {
     expect(output.getLine()).to.equal('headers stick user-agent httprompt');
   });
 
-  it('Replaces $(vars.x) variables from profile variables', function() {
-    var vars = { username: 'admin' };
-    var session = { getProfile: function() { return { getVariable: function(v) { return vars[v]; } }; } };
-    var input = new Request('login $(vars.username)');
+  it('Replaces $(profile.x) variables from profile variables', function() {
+    var profileVars = { username: 'admin' };
+    var session = { getProfile: function() { return { getVariable: function(v) { return profileVars[v]; } }; } };
+    var input = new Request('login $(profile.username)');
     var output = transformer(input, null, null, session);
     expect(output.getLine()).to.equal('login admin');
+  });
+
+  it('Replaces session variables', function() {
+    var vars = { id: '500' };
+    var session = { get: function(name) { return vars[name]; } };
+    var input = new Request('get /users/$(vars.id)');
+    var output = transformer(input, null, null, session);
+    expect(output.getLine()).to.equal('get /users/500');
   });
 
   it('Fails if transformer namespace is invalid', function() {

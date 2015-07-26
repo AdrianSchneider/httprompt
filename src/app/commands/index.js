@@ -14,6 +14,7 @@ module.exports = function(container) {
     require('./profiles')(container.get('config'), container.get('session')),
     require('./http')(container.get('httpClient')),
     require('./httpHeaders')(container.get('session')),
+    require('./vars')(container.get('session'))
   ].reduce(function(out, items) {
     return out.concat(items);
   }, []);

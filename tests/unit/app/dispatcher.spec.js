@@ -22,6 +22,14 @@ describe('Dispatcher', function() {
       match: function(line) { return line.getLine() === 'fail'; },
       process: function(line, done) { done(new Error('failed')); },
       setDispatcher: function() {}
+    }, {
+      match: function(line) { return line.getLine() === 'sync'; },
+      process: function(line) { return 'response'; },
+      setDispatcher: function() {}
+    }, {
+      match: function(line) { return line.getLine() === 'sync error'; },
+      process: function(line) { throw new Error('sync fail'); },
+      setDispatcher: function() {}
     }];
     this.dispatcher = new Dispatcher(this.session, this.commands);
   });
@@ -54,6 +62,13 @@ describe('Dispatcher', function() {
   it('Fails when processing fails', function(done) {
     this.dispatcher.dispatch(new Request('fail'), function(err) {
       expect(err.message).to.equal('failed');
+      done();
+    });
+  });
+
+  it('Supports synchronous processors', function(done) {
+    this.dispatcher.dispatch(new Request('sync error'), function(err, status, response) {
+      expect(err.message).to.equal('sync fail');
       done();
     });
   });
