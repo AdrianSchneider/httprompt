@@ -18,7 +18,8 @@ module.exports = function(request, parentRequest, config, session) {
     if (type === 'input')    return parentRequest.get(name);
     if (type === 'response') return getResponse(name);
     if (type === 'config')   return getConfig(name);
-    if (type === 'vars')     return getVar(name);
+    if (type === 'profile')  return getProfileVariable(name);
+    if (type === 'vars')     return getSessionVariable(name);
 
     throw new Error('invalid variable namespace: ' + type);
   };
@@ -44,8 +45,12 @@ module.exports = function(request, parentRequest, config, session) {
     return config.get(name);
   };
 
-  var getVar = function(name) {
+  var getProfileVariable = function(name) {
     return session.getProfile().getVariable(name);
+  };
+
+  var getSessionVariable = function(name) {
+    return session.get(name);
   };
 
   return main();
