@@ -17,7 +17,7 @@ function open(data, done) {
   fs.writeFile('/tmp/jsonfui', JSON.stringify(data), function(err) {
     if (err) return done(err);
 
-    var process = spawn('jsonfui', ['-f', '/tmp/jsonfui'], { stdio: 'inherit' });
+    var process = spawn('jsonfui', ['/tmp/jsonfui'], { stdio: 'inherit' });
     process.on('close', function() {
       done();
     });
