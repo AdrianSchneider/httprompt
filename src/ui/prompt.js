@@ -23,7 +23,7 @@ module.exports = function Prompt(readline, dispatcher, renderer, options) {
    */
   var init = function() {
     queue = async.queue(onRequest);
-    queue.drain = function() { rl.prompt(); };
+    queue.drain = function() { rl.prompt(true); };
 
     rl = readline.createInterface(options);
     rl.on('line', onLine);

@@ -97,6 +97,8 @@ describe('Prompt', function() {
     rl.emit('line', 'a');
   });
 
+  it('Preserves cursor when draining');
+
 });
 
 /**
