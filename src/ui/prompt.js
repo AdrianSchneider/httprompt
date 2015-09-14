@@ -23,10 +23,18 @@ module.exports = function Prompt(readline, dispatcher, renderer, options) {
    */
   var init = function() {
     queue = async.queue(onRequest);
-    queue.drain = function() { rl.prompt(true); };
-
+    clearPendingTasks();
     rl = readline.createInterface(options);
     rl.on('line', onLine);
+  };
+
+  /**
+   * Creates a new queue
+   * @return async.queue
+   */
+  var clearPendingTasks = function() {
+    queue.kill();
+    queue.drain = function() { rl.prompt(true); };
   };
 
   /**
@@ -71,8 +79,16 @@ module.exports = function Prompt(readline, dispatcher, renderer, options) {
    */
   var onRequest = function(request, done) {
     dispatcher.dispatch(request, function(err, matched, result) {
-      if (err) return renderer.render('console', err, done);
-      if (!matched) return renderer.render('console', new Error('Unknown command; type "help" for some ideas'), done);
+      if (err) {
+        clearPendingTasks();
+        return renderer.render('console', err, done);
+      }
+
+      if (!matched) {
+        clearPendingTasks();
+        return renderer.render('console', new Error('Unknown command; type "help" for some ideas'), done);
+      }
+
       renderer.render('console', result, done);
     });
 
