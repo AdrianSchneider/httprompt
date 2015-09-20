@@ -75,4 +75,4 @@ The profile specified by `default.profile` is loaded by default, or optionally s
   }
 ```
 
-then you could log in, and run `login admin letmein` and it would post to that URL.
+then you could open the app and run `login admin letmein` and it would post to that URL.
