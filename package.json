@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "async": "^1.2.1",
+    "bson-objectid": "^1.1.1",
     "commander": "^2.8.1",
     "readline-vim": "^0.3.2",
     "request": "^2.58.0",

@@ -34,6 +34,10 @@ describe('Request Parser', function() {
     expect(parse('a=true b=false')).to.deep.equal({ a: true, b: false });
   });
 
+  it('Quoted booleans are strings', function() {
+    expect(parse('a="true"')).to.deep.equal({ a: "true" });
+  });
+
   it('Handles spaces in quotes', function() {
     expect(parse('a="complex value" b=false')).to.deep.equal({ a: "complex value", b: false });
   });

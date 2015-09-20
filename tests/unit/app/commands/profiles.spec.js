@@ -26,12 +26,10 @@ describe('Profile Commands', function() {
 
   describe('profiles list', function() {
 
-    it('returns a list of profiles', function(done) {
+    it('returns a list of profiles', function() {
       this.profiles.mock('getList').returns(['a', 'b', 'c']);
-      this.getCommand('profiles list').process(new Request(''), function(err, output) {
-        expect(output).to.deep.equal(['a', 'b', 'c']);
-        done();
-      });
+      var output = this.getCommand('profiles list').process(new Request(''));
+      expect(output).to.deep.equal(['a', 'b', 'c']);
     });
 
   });
@@ -47,63 +45,47 @@ describe('Profile Commands', function() {
       this.getCommand('profiles switch').process(new Request('', { name: 'bob' }), done);
     });
 
-    it('catches and passes the error', function(done) {
-      this.session
-        .mock('switchProfile')
-        .takes('madeup', this.dispatcher, function(){})
-        .calls(2, [new Error('made up')]);
-
-      this.getCommand('profiles switch').process(new Request('', { name: 'madeup' }), function(err) {
-        expect(err.message).to.equal('made up');
-        done();
-      });
-    });
-
   });
 
   describe('profiles add <name> <baseUrl>', function() {
 
-    it('Adds a new profile', function(done) {
+    it('Adds a new profile', function() {
       this.profiles.mock('add').takes('bob', 'http://');
-      this.getCommand('profiles add').process(new Request('', { name: 'bob', baseUrl: 'http://' }), done);
+      this.getCommand('profiles add').process(new Request('', { name: 'bob', baseUrl: 'http://' }));
     });
 
   });
 
   describe('profiles remove <name>', function() {
 
-    it('removes the requested profile', function(done) {
+    it('removes the requested profile', function() {
       this.profiles.mock('remove').takes('bob');
-      this.getCommand('profiles remove').process(new Request('', { name: 'bob' }), done);
+      this.getCommand('profiles remove').process(new Request('', { name: 'bob' }));
     });
 
   });
 
   describe('profile vars', function() {
 
-    it('lists the vars', function(done) {
+    it('lists the vars', function() {
       var session = nodemock.mock();
       this.session.mock('getProfile').returns(session);
+      session.mock('getVariables').returns({ a: "b" });
 
-      session
-        .mock('getVariables')
-        .returns({ a: "b" });
-
-      this.getCommand('profile vars').process(new Request(''), function(err, out) {
-        expect(out).to.deep.equal({ a: "b" });
-        done();
-      });
+      var output = this.getCommand('profile vars').process(new Request(''));
+      expect(output).to.deep.equal({ a: "b" });
     });
 
   });
 
   describe('profile vars set <key> <value>', function() {
 
-    it('sets the profile variable', function(done) {
+    it('sets the profile variable', function() {
       var session = nodemock.mock();
       this.session.mock('getProfile').returns(session);
       session.mock('setVariable').takes('key', 'value');
-      this.getCommand('profile vars set').process(new Request('', { key: 'key', value: 'value'}), done);
+
+      this.getCommand('profile vars set').process(new Request('', { key: 'key', value: 'value'}));
     });
 
   });

@@ -23,16 +23,14 @@ describe('Config Commands', function() {
 
   describe('config list', function() {
 
-    it('Lists all of the config values', function(done) {
+    it('Lists all of the config values', function() {
       this.command = this.getCommand('config list');
       this.config
         .mock('getGlobals')
         .returns({ config: true });
 
-      this.command.process(new Request(), function(err, output) {
-        expect(output).to.deep.equal({ config: true });
-        done(err);
-      });
+      var output = this.command.process(new Request());
+      expect(output).to.deep.equal({ config: true });
     });
 
   });
@@ -43,41 +41,39 @@ describe('Config Commands', function() {
       this.command = this.getCommand('config set');
     });
 
-    it('Errors when the requested key does not exist', function(done) {
+    it('Errors when the requested key does not exist', function() {
       var request = new Request('', { key: 'madeup', value: 'invalid' });
       this.config.mock('has').takes('madeup').returns(false);
-      this.command.process(request, function(err) {
-        expect(err.message).to.contain('does not exist');
-        done();
-      });
+      var f = function() { this.command.process(request); }.bind(this);
+      expect(f).to.throw(Error, 'does not exist');
     });
 
-    it('Sets the key', function(done) {
+    it('Sets the key', function() {
       var request = new Request('', { key: 'key', value: 'value' });
       this.config.mock('has').takes('key').returns(true);
       this.config.mock('set').takes('key', 'value');
-      this.command.process(request, done);
+      this.command.process(request);
     });
 
-    it('Sets the key and casts true to boolean', function(done) {
+    it('Sets the key and casts true to boolean', function() {
       var request = new Request('', { key: 'doit', value: 'true' });
       this.config.mock('has').takes('doit').returns(true);
       this.config.mock('set').takes('doit', true);
-      this.command.process(request, done);
+      this.command.process(request);
     });
 
-    it('Sets the key and casts false to boolean', function(done) {
+    it('Sets the key and casts false to boolean', function() {
       var request = new Request('', { key: 'doit', value: 'false' });
       this.config.mock('has').takes('doit').returns(true);
       this.config.mock('set').takes('doit', false);
-      this.command.process(request, done);
+      this.command.process(request);
     });
 
-    it('Sets the key and casts numbers to numbers', function(done) {
+    it('Sets the key and casts numbers to numbers', function() {
       var request = new Request('', { key: 'cats', value: '8' });
       this.config.mock('has').takes('cats').returns(true);
       this.config.mock('set').takes('cats', 8);
-      this.command.process(request, done);
+      this.command.process(request);
     });
 
   });
@@ -88,23 +84,18 @@ describe('Config Commands', function() {
       this.command = this.getCommand('config get');
     });
 
-    it('Errors when the requested key does not exist', function(done) {
+    it('Errors when the requested key does not exist', function() {
       var request = new Request('', { key: 'madeup', value: 'invalid' });
       this.config.mock('has').takes('madeup').returns(false);
-      this.command.process(request, function(err) {
-        expect(err.message).to.contain('does not exist');
-        done();
-      });
+      var f = function() { this.command.process(request); }.bind(this);
+      expect(f).to.throw(Error, 'does not exist');
     });
 
-    it('Gets the key', function(done) {
+    it('Gets the key', function() {
       var request = new Request('', { key: 'key' });
       this.config.mock('has').takes('key').returns(true);
       this.config.mock('get').takes('key').returns('value');
-      this.command.process(request, function(err, out) {
-        expect(out).to.equal('value');
-        done(err);
-      });
+      expect(this.command.process(request)).to.equal('value');
     });
 
   });

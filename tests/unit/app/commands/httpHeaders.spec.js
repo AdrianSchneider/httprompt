@@ -19,33 +19,33 @@ describe('HTTP Header Commands', function() {
 
   describe('header set <name> <value>', function() {
 
-    it('Sets the http header on the session', function(done) {
+    it('Sets the http header on the session', function() {
       var request = new Request('', { name: 'authorization', value: 'bananas' });
       this.command = this.getCommand('header set');
       this.session.mock('setNextHeader').takes('authorization', 'bananas');
-      this.command.process(request, done);
+      this.command.process(request);
     });
 
   });
 
   describe('header stick <name> <value>', function() {
 
-    it('Sets the http header permanently on the session', function(done) {
+    it('Sets the http header permanently on the session', function() {
       var request = new Request('', { name: 'authorization', value: 'bananas' });
       this.command = this.getCommand('header stick');
       this.session.mock('setHeader').takes('authorization', 'bananas');
-      this.command.process(request, done);
+      this.command.process(request);
     });
 
   });
 
   describe('header unstick <name>', function() {
 
-    it('Unsets the header', function(done) {
+    it('Unsets the header', function() {
       var request = new Request('', { name: 'authorization' });
       this.command = this.getCommand('header unset');
       this.session.mock('unsetHeader').takes('authorization');
-      this.command.process(request, done);
+      this.command.process(request);
     });
 
   });

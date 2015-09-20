@@ -1,8 +1,8 @@
 'use strict';
 
-var _           = require('underscore');
-var async       = require('async');
-var transformer = require('./request.transformer');
+var _                   = require('underscore');
+var async               = require('async');
+var requestPreprocessor = require('./request.preprocessor');
 
 /**
  * Takes a user request and converts it into a response
@@ -22,20 +22,19 @@ module.exports = function Dispatcher(session, baseCommands, config) {
    * @param {Request} request
    * @param {Function} done - err,matched,result
    */
-  this.dispatch = function(request, parentRequest, done) {
-    if (!done) done = parentRequest;
+  this.dispatch = function(request, done) {
+    requestPreprocessor(request, this, function(err, req) {
+      if(err) return done(err);
 
-    request = preprocess(request, parentRequest);
+      var command = getMatchingCommand(req);
+      if (!command) return done(null, false);
 
-    var command = getMatchingCommand(request);
-    if (!command) return done(null, false);
+      if (command.isSync()) {
+        return handleSyncCommand(command, req, handleResponse(req, done));
+      }
 
-    // Synchronous
-    if (command.process.length === 1) {
-      return handleSyncCommand(command, request, handleResponse(request, done));
-    }
-
-    return command.process(request, handleResponse(request, done));
+      return command.process(req, handleResponse(req, done));
+    });
   };
 
   /**
@@ -93,10 +92,6 @@ module.exports = function Dispatcher(session, baseCommands, config) {
     commands.forEach(function(command) {
       command.setDispatcher(dispatcher);
     });
-  };
-
-  var preprocess = function(request, parentRequest) {
-    return transformer(request, parentRequest, config, session);
   };
 
   /**

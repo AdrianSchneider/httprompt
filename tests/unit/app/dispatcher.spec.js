@@ -17,19 +17,26 @@ describe('Dispatcher', function() {
     this.commands = [{
       match: function(line) { return line.getLine() === 'a'; },
       process: function(line, done) { done(null, { name: 'sup' }); },
-      setDispatcher: function() {}
+      setDispatcher: function() {},
+      isSync: function() { return false; }
     }, {
       match: function(line) { return line.getLine() === 'fail'; },
       process: function(line, done) { done(new Error('failed')); },
-      setDispatcher: function() {}
+      setDispatcher: function() {},
+      isSync: function() { return false; }
+
     }, {
       match: function(line) { return line.getLine() === 'sync'; },
       process: function(line) { return 'response'; },
-      setDispatcher: function() {}
+      setDispatcher: function() {},
+      isSync: function() { return true; }
+
     }, {
       match: function(line) { return line.getLine() === 'sync error'; },
       process: function(line) { throw new Error('sync fail'); },
-      setDispatcher: function() {}
+      setDispatcher: function() {},
+      isSync: function() { return true; }
+
     }];
     this.dispatcher = new Dispatcher(this.session, this.commands);
   });

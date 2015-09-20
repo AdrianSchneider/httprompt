@@ -126,7 +126,7 @@ function ConfigProfile(name, baseUrl, actions, vars, startupTasks, requestOption
         actionString,
         function(request, done) {
           async.eachSeries(actions[actionString], function(line, next) {
-            dispatcher.dispatch(new Request(line), request, function(err, result, response) {
+            dispatcher.dispatch(new Request(line, null, request), function(err, result, response) {
               if (err) return next(err);
               if (!result) return next(new Error('"' + line + ' does not match any commands'));
               return next();
@@ -135,7 +135,9 @@ function ConfigProfile(name, baseUrl, actions, vars, startupTasks, requestOption
             if (err) return done(err);
             return done();
           });
-        }
+        },
+        null,
+        'user'
       );
     });
   };

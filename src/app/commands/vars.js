@@ -12,7 +12,11 @@ module.exports = function(session) {
     return [
       new Command('vars set <key> <value>', set),
       new Command('vars unset <key>', unset),
-      new Command('vars get <key>', get)
+      new Command('vars get <key>', get),
+      new Command('vars.<key>', get, null, 'helper'),
+
+      // TODO find better place
+      new Command('input.<key>', getInput, null, 'helper')
     ];
   };
 
@@ -28,6 +32,11 @@ module.exports = function(session) {
     return session.get(request.get('key'));
   };
 
-  return main();
+  var getInput = function(request) {
+    var parent = request.getParentRequest();
+    if(!parent) throw new Error('No parent request containing input');
+    return parent.get(request.get('key'));
+  };
 
+  return main();
 };

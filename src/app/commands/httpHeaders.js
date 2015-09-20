@@ -17,19 +17,16 @@ module.exports = function HttpHeaderCommands(session) {
     ];
   };
 
-  var setHeader = function(request, done) {
+  var setHeader = function(request) {
     session.setNextHeader(request.get('name'), request.get('value'));
-    done();
   };
 
-  var stickHeader = function(request, done) {
+  var stickHeader = function(request) {
     session.setHeader(request.get('name'), request.get('value'));
-    done();
   };
 
-  var unsetHeader = function(request, done) {
+  var unsetHeader = function(request) {
     session.unsetHeader(request.get('name'));
-    done();
   };
 
   return main();

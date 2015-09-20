@@ -16,47 +16,37 @@ module.exports = function(config, session) {
       new Command('profiles add <name> <baseUrl>',   addProfile),
       new Command('profiles remove <name>',          removeProfile),
       new Command('profile vars',                    listVars),
-      new Command('profile vars set <key> <value>',  profileSet)
+      new Command('profile vars set <key> <value>',  profileSet),
+      new Command('profile.<key>',                   profileGet, null, 'helper')
     ];
   };
 
-  var listProfiles = function(request, done) {
-    done(null, config.getProfiles().getList());
+  var listProfiles = function(request) {
+    return config.getProfiles().getList();
   };
 
   var switchProfile = function(request, done) {
-    try {
-      session.switchProfile(request.get('name'), this.getDispatcher(), done);
-    } catch (e) {
-      return done(e);
-    }
+    session.switchProfile(request.get('name'), this.getDispatcher(), done);
   };
 
-  var addProfile = function(request, done) {
-    try {
-      config.getProfiles().add(request.get('name'), request.get('baseUrl'));
-      done();
-    } catch (e) {
-      return done(e);
-    }
+  var addProfile = function(request) {
+    config.getProfiles().add(request.get('name'), request.get('baseUrl'));
   };
 
-  var removeProfile = function(request, done) {
-    try {
-      config.getProfiles().remove(request.get('name'));
-      done();
-    } catch (e) {
-      return done(e);
-    }
+  var removeProfile = function(request) {
+    config.getProfiles().remove(request.get('name'));
   };
 
-  var listVars = function(request, done) {
-    done(null, session.getProfile().getVariables());
+  var listVars = function(request) {
+    return session.getProfile().getVariables();
   };
 
-  var profileSet = function(request, done) {
+  var profileSet = function(request) {
     session.getProfile().setVariable(request.get('key'), request.get('value'));
-    done();
+  };
+
+  var profileGet = function(request) {
+    return session.getProfile().getVariable(request.get('key'));
   };
 
   return main();
