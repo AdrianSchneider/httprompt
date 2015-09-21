@@ -54,4 +54,21 @@ describe('Variable Commands', function() {
 
   });
 
+  describe('input.<key>', function() {
+
+    it('Gets the input key from the parent request', function() {
+      var command = this.getCommand('input.');
+      var request = new Request('', { key: 'name' }, new Request('', { name: 'hello' }));
+      expect(command.process(request)).to.deep.equal('hello');
+    });
+
+    it('Throws an error when key is invalid', function() {
+      var command = this.getCommand('input.');
+      var request = new Request();
+      var f = function() { command.process(request); };
+      expect(f).to.throw(Error, 'No parent request');
+    });
+
+  });
+
 });

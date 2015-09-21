@@ -29,7 +29,7 @@ module.exports = function(session, renderer) {
    */
   var open = function(request, done) {
     var entry = session.getLastResponse();
-    if (!entry) return done(null, new Error('No items in history'));
+    if (!entry) return done(new Error('No items in history'));
     renderer.renderExternal(entry.getResponse(), done);
   };
 
