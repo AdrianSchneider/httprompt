@@ -31,7 +31,7 @@ module.exports = function(config, stdin, stdout, profileName, transcriptFile, do
   container.set('session', new Session(config.getProfiles(), container.get('sessionWriter')));
   container.set('httpClient', new HttpClient(container.get('session')));
   container.set('renderer', new Renderer(config, {
-    console : require('./ui/renderers/console'),
+    console : new (require('./ui/renderers/console'))(console, 2),
     jsonfui : require('./ui/renderers/jsonfui'),
     less    : require('./ui/renderers/less')
   }));

@@ -1,7 +1,20 @@
 'use strict';
 
-module.exports = {
-  renderResponse: function(response, done) {
+/**
+ * Handles renderering to the console
+ *
+ * @param {Object} console - global console object
+ * @param {Number} spaces - default spaces for JSON serialization
+ */
+module.exports = function ConsoleRenderer(console, spaces) {
+
+  /**
+   * Renders a response
+   *
+   * @param {Mixed} response
+   * @param {Function} done err
+   */
+  this.renderResponse = function(response, done) {
     if(!response) return done();
 
     if(typeof response === 'string') {
@@ -9,11 +22,19 @@ module.exports = {
       return done();
     }
 
-    console.log(typeof response.serialize !== 'undefined' ? response.serialize() : JSON.stringify(response, null, 2));
+    console.log(typeof response.serialize !== 'undefined' ? response.serialize() : JSON.stringify(response, null, spaces));
     done();
-  },
-  renderError: function(error, done) {
+  };
+
+  /**
+   * Renders an error
+   *
+   * @param {Error} error
+   * @param {Function} done err
+   */
+  this.renderError = function(error, done) {
     console.log('Error:', error.message);
     done();
-  }
+  };
+
 };
