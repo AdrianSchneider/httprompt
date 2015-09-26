@@ -13,7 +13,6 @@ module.exports = function(config) {
   var main = function() {
     return [
       new Command('config list',              getList),
-      new Command('config get <key>',         getConfig),
       new Command('config set <key> <value>', setConfig),
       new Command('config edit',              editConfig),
       new Command('config.<key>',             getConfig, null, 'helper')

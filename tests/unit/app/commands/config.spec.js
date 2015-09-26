@@ -78,26 +78,4 @@ describe('Config Commands', function() {
 
   });
 
-  describe('config get <key>', function() {
-
-    beforeEach(function() {
-      this.command = this.getCommand('config get');
-    });
-
-    it('Errors when the requested key does not exist', function() {
-      var request = new Request('', { key: 'madeup', value: 'invalid' });
-      this.config.mock('has').takes('madeup').returns(false);
-      var f = function() { this.command.process(request); }.bind(this);
-      expect(f).to.throw(Error, 'does not exist');
-    });
-
-    it('Gets the key', function() {
-      var request = new Request('', { key: 'key' });
-      this.config.mock('has').takes('key').returns(true);
-      this.config.mock('get').takes('key').returns('value');
-      expect(this.command.process(request)).to.equal('value');
-    });
-
-  });
-
 });

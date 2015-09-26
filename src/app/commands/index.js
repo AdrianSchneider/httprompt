@@ -10,7 +10,7 @@ module.exports = function(container) {
   var groups = [
     { text: "Your custom commands", key: "user" },
     { text: "Built in commands", key: "command" },
-    { text: "Helper fuNctions -- $(helper_call)", key: "helper" }
+    { text: "Helper functions -- $(helper_call)", key: "helper" }
   ];
 
   return [

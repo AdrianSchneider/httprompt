@@ -12,7 +12,6 @@ module.exports = function(session) {
     return [
       new Command('vars set <key> <value>', set),
       new Command('vars unset <key>', unset),
-      new Command('vars get <key>', get),
       new Command('vars.<key>', get, null, 'helper'),
 
       // TODO find better place

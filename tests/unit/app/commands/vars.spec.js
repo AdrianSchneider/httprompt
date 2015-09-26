@@ -43,17 +43,6 @@ describe('Variable Commands', function() {
 
   });
 
-  describe('vars get <key>', function() {
-
-    it('Gets the session variable synchronously', function() {
-      var command = this.getCommand('vars get');
-      var request = new Request('', { key: 'name' });
-      this.session.mock('get').takes('name').returns('adrian');
-      expect(command.process(request)).to.equal('adrian');
-    });
-
-  });
-
   describe('input.<key>', function() {
 
     it('Gets the input key from the parent request', function() {
