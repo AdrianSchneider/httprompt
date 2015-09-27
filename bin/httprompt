@@ -15,14 +15,7 @@ program
   .option('-o --output [file]', 'Transcript output filename')
   .parse(process.argv);
 
-if (!program.config) {
-  var regexp = /windows/i;
-  if (!process.env.OS.match(regexp)) {
-    program.config = path.resolve(process.env.HOME, './.httprompt.json');
-  } else {
-    program.config = path.resolve(process.env.APPDATA, './.httprompt.json');
-  }
-} 
+if (!program.config) program.config = path.resolve(findConfigDirectory(), './.httprompt.json');
 
 var config = new Config(program.config);
 config.load(function(err) {
@@ -58,3 +51,8 @@ var die = function(err) {
   console.error(err);
   process.exit(1);
 };
+
+function findConfigDirectory() {
+  //Supports Windows and UNIX environments
+  return process.env.HOME || process.env.APPDATA;
+}
