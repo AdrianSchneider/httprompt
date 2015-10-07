@@ -40,8 +40,8 @@ module.exports = function(session, renderer) {
    * @param {Function}function
    */
   var openEmbedded = function(request, done) {
-    var childRequest = new Request(request.getLine().substr(5));
-    this.getDispatcher().dispatch(childRequest, request, function(err, result, response) {
+    var childRequest = new Request(request.getLine().substr(5), {}, request);
+    this.getDispatcher().dispatch(childRequest, function(err, result, response) {
       if (err) return done(err);
       if (!result) return done(new Error('Unknown command: ' + childRequest.getLine()));
       renderer.renderExternal(response, done);

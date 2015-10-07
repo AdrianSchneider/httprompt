@@ -71,14 +71,16 @@ describe('Variable Commands', function() {
 
     it('Renders a response with an external viewer', function(done) {
       var response = { statusCode: 200 };
+      var request = new Request('open blah');
 
       this.dispatcher
         .mock('dispatch')
-        .takesF(function(childRequest, request, f) {
+        .takesF(function(childRequest, f) {
           expect(childRequest.getLine()).to.equal('blah');
+          expect(childRequest.getParentRequest().getLine()).to.deep.equal('open blah');
           return true;
         })
-        .calls(2, [null, true, response]);
+        .calls(1, [null, true, response]);
 
       this.renderer
         .mock('renderExternal')
